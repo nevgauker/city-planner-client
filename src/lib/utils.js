@@ -141,3 +141,92 @@ export function debounce(func, wait) {
     timeout = setTimeout(later, wait)
   }
 }
+
+// Generate ICS calendar file from itinerary
+export function generateICS(itinerary, city) {
+  const now = new Date()
+  const uid = `${city}-${now.getTime()}@cityplanner.app`
+
+  const formatDateTime = (dateStr, hour) => {
+    const date = new Date(dateStr)
+    date.setHours(hour, 0, 0, 0)
+    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+  }
+
+  const escapeText = (text) => {
+    if (!text) return ''
+    return text.replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;')
+  }
+
+  const activities = []
+  itinerary.forEach((day, dayIdx) => {
+    const slots = [
+      { time: 9, block: day.blocks.morning },
+      { time: 13, block: day.blocks.afternoon },
+      { time: 18, block: day.blocks.evening },
+    ]
+
+    slots.forEach((slot) => {
+      const activity = slot.block
+      if (activity && activity.activity) {
+        const start = formatDateTime(day.date, slot.time)
+        const duration = (activity.duration_minutes || 60)
+        const endHour = slot.time + Math.ceil(duration / 60)
+        const end = formatDateTime(day.date, endHour)
+
+        const summary = `${activity.activity} at ${activity.place_name}`
+        const description = `${activity.category || 'Activity'} • ${activity.notes || ''}`
+
+        activities.push({
+          start,
+          end,
+          summary,
+          description,
+          location: activity.place_name,
+        })
+      }
+    })
+  })
+
+  const events = activities
+    .map(
+      (a) => `BEGIN:VEVENT
+DTSTART:${a.start}
+DTEND:${a.end}
+UID:${uid}-${Math.random()}
+DTSTAMP:${now.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+SUMMARY:${escapeText(a.summary)}
+DESCRIPTION:${escapeText(a.description)}
+LOCATION:${escapeText(a.location)}
+STATUS:CONFIRMED
+END:VEVENT`
+    )
+    .join('\n')
+
+  const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//City Planner//City Planner//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+CALENDARNAME:${escapeText(city)} Trip
+CALDESC:Travel itinerary for ${city}
+X-WR-CALNAME:${escapeText(city)} Trip
+X-WR-CALDESC:Travel itinerary for ${city}
+${events}
+END:VCALENDAR`
+
+  return ics
+}
+
+// Download ICS file
+export function downloadICS(ics, city) {
+  const blob = new Blob([ics], { type: 'text/calendar' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `${city}-itinerary.ics`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}

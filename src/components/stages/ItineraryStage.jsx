@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
 import { generateItinerary, regenerateDay, getWeatherForecast, saveTrip, encodeTripForShare, saveTripToBackend } from '../../lib/api'
+import { generateICS, downloadICS } from '../../lib/utils'
 import ItineraryTimeline from '../ui/ItineraryTimeline'
 import GoogleItineraryMap from '../map/GoogleItineraryMap'
 import BackButton from '../ui/BackButton'
@@ -150,6 +151,22 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
     })
   }
 
+  const handleCalendarExport = () => {
+    if (!itinerary || !tripData) {
+      toast.error('No itinerary to export')
+      return
+    }
+
+    try {
+      const ics = generateICS(itinerary, tripData.city)
+      downloadICS(ics, tripData.city)
+      toast.success('Calendar file downloaded!')
+    } catch (error) {
+      console.error('Calendar export error:', error)
+      toast.error('Failed to export to calendar')
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-navy-900">
@@ -215,6 +232,13 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
             title="Copy share link to clipboard"
           >
             🔗 Share
+          </button>
+          <button
+            onClick={handleCalendarExport}
+            className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+            title="Add to calendar (Google, Apple, Outlook)"
+          >
+            📅 Calendar
           </button>
           <button
             onClick={handleExportItinerary}
