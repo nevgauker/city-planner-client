@@ -5,9 +5,9 @@ import { submitFeedback } from '../../lib/api.js';
 import { Star } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-export default function FeedbackModal({ city, onClose }) {
+export default function FeedbackModal({ city, onClose, initialRating = 0 }) {
   const { user } = useAuth();
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(initialRating);
   const [comment, setComment] = useState('');
   const [wouldRecommend, setWouldRecommend] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -17,6 +17,7 @@ export default function FeedbackModal({ city, onClose }) {
     try {
       await submitFeedback(rating, city, comment, wouldRecommend);
       localStorage.setItem(`feedback_rated_${city}`, '1');
+      localStorage.setItem(`feedback_rating_${city}`, rating.toString());
       toast.success('Thanks for your feedback!');
       onClose();
     } catch (err) {

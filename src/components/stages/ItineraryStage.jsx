@@ -14,6 +14,7 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
   const [isRegenerating, setIsRegenerating] = useState(false)
   const [regeneratingDay, setRegeneratingDay] = useState(null)
   const [showFeedback, setShowFeedback] = useState(false)
+  const [feedbackRating, setFeedbackRating] = useState(0)
 
   useEffect(() => {
     const generateItineraryData = async () => {
@@ -191,6 +192,21 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
           homeBase={tripData.homeBase}
         />
 
+        {/* Feedback Button - Bottom Left */}
+        <motion.button
+          onClick={() => {
+            const previousRating = parseInt(localStorage.getItem(`feedback_rating_${tripData.city}`)) || 0;
+            setFeedbackRating(previousRating);
+            setShowFeedback(true);
+          }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 w-12 h-12 rounded-full bg-warm-accent/20 hover:bg-warm-accent/40 border border-warm-accent/50 flex items-center justify-center transition-colors"
+          title="Share your feedback"
+        >
+          <span className="text-xl">💬</span>
+        </motion.button>
+
         {/* Export & Share Buttons */}
         <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-10 flex gap-2 flex-col sm:flex-row">
           <button
@@ -213,6 +229,7 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
       {showFeedback && (
         <FeedbackModal
           city={tripData.city}
+          initialRating={feedbackRating}
           onClose={() => setShowFeedback(false)}
         />
       )}
