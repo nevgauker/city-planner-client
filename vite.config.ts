@@ -22,5 +22,6 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    chunkSizeWarningLimit: 1000, // Allow up to 1MB chunks (default: 500kB)
   },
 })
