@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
-import { generateItinerary, regenerateDay, getWeatherForecast, saveTrip, encodeTripForShare } from '../../lib/api'
+import { generateItinerary, regenerateDay, getWeatherForecast, saveTrip, encodeTripForShare, saveTripToBackend } from '../../lib/api'
 import ItineraryTimeline from '../ui/ItineraryTimeline'
 import GoogleItineraryMap from '../map/GoogleItineraryMap'
 import BackButton from '../ui/BackButton'
+import FeedbackModal from '../ui/FeedbackModal.jsx'
 
 export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
   const [itinerary, setItinerary] = useState(null)
@@ -12,6 +13,7 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
   const [selectedActivityIndex, setSelectedActivityIndex] = useState(null)
   const [isRegenerating, setIsRegenerating] = useState(false)
   const [regeneratingDay, setRegeneratingDay] = useState(null)
+  const [showFeedback, setShowFeedback] = useState(false)
 
   useEffect(() => {
     const generateItineraryData = async () => {
@@ -43,7 +45,29 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
         // Auto-save to localStorage
         const tripId = `${tripData.city}-${Date.now()}`
         saveTrip(tripId, tripData, result.itinerary)
+
+        // Save to backend
+        try {
+          await saveTripToBackend(
+            tripData.city,
+            `${tripData.city} Trip`,
+            result.itinerary,
+          )
+        } catch (err) {
+          console.warn('Failed to save trip to backend:', err)
+        }
+
         toast.success('Itinerary generated & saved!')
+
+        // Show feedback modal after 8 seconds
+        setTimeout(() => {
+          const alreadyRated = localStorage.getItem(
+            `feedback_rated_${tripData.city}`,
+          )
+          if (!alreadyRated) {
+            setShowFeedback(true)
+          }
+        }, 8000)
       } catch (error) {
         toast.error(error.message || 'Failed to generate itinerary')
         console.error(error)
@@ -185,6 +209,13 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
           </button>
         </div>
       </div>
+
+      {showFeedback && (
+        <FeedbackModal
+          city={tripData.city}
+          onClose={() => setShowFeedback(false)}
+        />
+      )}
     </motion.div>
   )
 }

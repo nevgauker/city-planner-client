@@ -10,6 +10,28 @@ const apiClient = axios.create({
   },
 })
 
+// Request interceptor: attach Bearer token
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('city_planner_token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+// Response interceptor: handle 401 logout
+apiClient.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('city_planner_token')
+      localStorage.removeItem('city_planner_user')
+      window.dispatchEvent(new Event('auth:logout'))
+    }
+    return Promise.reject(error)
+  }
+)
+
 // Client-side city search (instant, no API calls)
 export async function searchCities(query, signal) {
   // Return empty for empty query
@@ -204,5 +226,33 @@ export function decodeTripFromShare(encoded) {
     return null
   }
 }
+
+// Auth API functions
+export const loginUser = (email, password) =>
+  apiClient.post('/auth/login', { email, password }).then((r) => r.data)
+
+export const registerUser = (email, password) =>
+  apiClient.post('/auth/register', { email, password }).then((r) => r.data)
+
+export const fetchMe = () => apiClient.get('/auth/me').then((r) => r.data)
+
+// Backend trip persistence
+export const saveTripToBackend = (city, title, itineraryData) =>
+  apiClient
+    .post('/trips', {
+      city,
+      title,
+      itineraryData: JSON.stringify(itineraryData),
+    })
+    .then((r) => r.data)
+
+// Feedback API functions
+export const submitFeedback = (rating, city, comment, wouldRecommend) =>
+  apiClient
+    .post('/feedback', { rating, city, comment, wouldRecommend })
+    .then((r) => r.data)
+
+export const submitUpgradeInterest = (reason) =>
+  apiClient.post('/feedback/upgrade-interest', { reason }).then((r) => r.data)
 
 export default apiClient

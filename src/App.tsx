@@ -6,6 +6,9 @@ import GoogleMapStage from './components/stages/GoogleMapStage'
 import TripDetailsStage from './components/stages/TripDetailsStage'
 import ItineraryStage from './components/stages/ItineraryStage'
 import GoogleMapProvider from './components/map/GoogleMapProvider'
+import AuthModal from './components/auth/AuthModal.jsx'
+import QuotaBar from './components/ui/QuotaBar.jsx'
+import { useAuth } from './contexts/AuthContext.jsx'
 import type { City, ItineraryDay, WeatherData } from './types/api'
 
 const STAGES = {
@@ -32,7 +35,10 @@ interface TripData {
 }
 
 const App: FC = () => {
+  const { user, refreshQuota } = useAuth()
   const [currentStage, setCurrentStage] = useState<number>(STAGES.GLOBE)
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [pendingGeneration, setPendingGeneration] = useState(false)
   const [tripData, setTripData] = useState<TripData>({
     city: null,
     coordinates: null,
@@ -80,7 +86,23 @@ const App: FC = () => {
       travelStyles: details.travelStyles,
       pace: details.pace,
     }))
+
+    if (!user) {
+      setPendingGeneration(true)
+      setShowAuthModal(true)
+      return
+    }
+
     setCurrentStage(STAGES.ITINERARY)
+  }
+
+  const handleAuthSuccess = (): void => {
+    setShowAuthModal(false)
+    refreshQuota()
+    if (pendingGeneration) {
+      setPendingGeneration(false)
+      setCurrentStage(STAGES.ITINERARY)
+    }
   }
 
   const handleRegenerateDay = (dayIndex: number): void => {
@@ -124,6 +146,18 @@ const App: FC = () => {
             tripData={tripData}
             onRegenerateDay={handleRegenerateDay}
             onBack={handleBackToDetails}
+          />
+        )}
+
+        <QuotaBar onSignInClick={() => setShowAuthModal(true)} />
+
+        {showAuthModal && (
+          <AuthModal
+            onSuccess={handleAuthSuccess}
+            onClose={() => {
+              setShowAuthModal(false)
+              setPendingGeneration(false)
+            }}
           />
         )}
 
