@@ -229,12 +229,12 @@ export function decodeTripFromShare(encoded) {
 
 // Auth API functions
 export const loginUser = (email, password) =>
-  apiClient.post('/auth/login', { email, password }).then((r) => r.data)
+  apiClient.post('/api/auth/login', { email, password }).then((r) => r.data)
 
 export const registerUser = (email, password) =>
-  apiClient.post('/auth/register', { email, password }).then((r) => r.data)
+  apiClient.post('/api/auth/register', { email, password }).then((r) => r.data)
 
-export const fetchMe = () => apiClient.get('/auth/me').then((r) => r.data)
+export const fetchMe = () => apiClient.get('/api/auth/me').then((r) => r.data)
 
 // Backend trip persistence
 export const saveTripToBackend = (city, title, itineraryData) =>

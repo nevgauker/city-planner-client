@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext.jsx';
+import { submitUpgradeInterest } from '../../lib/api.js';
 import { ChevronDown } from 'lucide-react';
+import { toast } from 'react-toastify';
 import AccountMenu from './AccountMenu.jsx';
 
 export default function QuotaBar({ onSignInClick }) {
   const { user, quota } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
+  const [hasNotified, setHasNotified] = useState(
+    () => localStorage.getItem('upgrade_interest_notified') === 'true'
+  );
 
   if (!user) {
     return (
@@ -44,11 +49,28 @@ export default function QuotaBar({ onSignInClick }) {
     >
       <div className='flex items-center gap-3'>
         {isExhausted ? (
-          <div className='glass-effect card-elevation rounded-full px-4 py-2 text-sm'>
-            <span className='text-red-400 font-semibold'>
-              Quota reached · Upgrade coming soon
-            </span>
-          </div>
+          <motion.button
+            onClick={async () => {
+              try {
+                await submitUpgradeInterest('quota_exhausted');
+                toast.success('You\'re on the list! We\'ll notify you when Pro launches.');
+                localStorage.setItem('upgrade_interest_notified', 'true');
+                setHasNotified(true);
+              } catch (error) {
+                toast.error('Failed to register interest. Please try again.');
+              }
+            }}
+            disabled={hasNotified}
+            whileHover={!hasNotified ? { scale: 1.05 } : {}}
+            whileTap={!hasNotified ? { scale: 0.95 } : {}}
+            className={`glass-effect card-elevation rounded-full px-4 py-2 text-sm font-semibold transition-all ${
+              hasNotified
+                ? 'text-green-400 cursor-default'
+                : 'text-warm-accent hover:bg-white/10 active:scale-95 cursor-pointer'
+            }`}
+          >
+            {hasNotified ? '✓ You\'re on the list' : 'Notify me when Pro launches →'}
+          </motion.button>
         ) : (
           <div className='glass-effect card-elevation rounded-full px-4 py-2 flex items-center gap-3'>
             <div className='flex gap-1'>

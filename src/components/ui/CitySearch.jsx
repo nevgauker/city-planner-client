@@ -8,7 +8,7 @@ export default function CitySearch({ onSearch, results, onSelectCity, isLoading,
   useEffect(() => {
     // Client-side search is instant, so search immediately
     onSearch(query)
-  }, [query, onSearch])
+  }, [query])
 
   const handleInputChange = (e) => {
     const value = e.target.value

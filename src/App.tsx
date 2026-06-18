@@ -79,6 +79,7 @@ const App: FC = () => {
   }
 
   const handleTripDetailsSubmit = (details: TripDetails): void => {
+    console.log('🔍 handleTripDetailsSubmit called, user:', user)
     setTripData((prev) => ({
       ...prev,
       startDate: details.startDate,
@@ -88,11 +89,13 @@ const App: FC = () => {
     }))
 
     if (!user) {
+      console.log('📝 No user found, showing auth modal')
       setPendingGeneration(true)
       setShowAuthModal(true)
       return
     }
 
+    console.log('✅ User authenticated, proceeding to itinerary stage')
     setCurrentStage(STAGES.ITINERARY)
   }
 

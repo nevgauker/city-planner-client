@@ -63,7 +63,7 @@ export default function GlobeStage({ onCitySelected }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="relative w-full h-full"
+      className="relative w-screen h-screen"
     >
       {/* 3D Globe Canvas */}
       <GlobeCanvas ref={globeRef} />
