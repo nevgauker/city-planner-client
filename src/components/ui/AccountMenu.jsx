@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext.jsx';
-import { LogOut } from 'lucide-react';
+import { LogOut, Archive } from 'lucide-react';
 
-export default function AccountMenu({ onClose, quota }) {
+export default function AccountMenu({ onClose, quota, onViewTrips }) {
   const { user, logout } = useAuth();
 
   const handleLogout = () => {
@@ -52,6 +52,19 @@ export default function AccountMenu({ onClose, quota }) {
         </div>
 
         <div className='border-t border-white/20' />
+
+        <motion.button
+          onClick={() => {
+            onViewTrips?.();
+            onClose();
+          }}
+          className='w-full flex items-center justify-center gap-2 py-2 px-3 bg-blue-900/30 border border-blue-500/50 hover:bg-blue-900/50 rounded-lg text-blue-300 font-medium transition-all'
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <Archive className='w-4 h-4' />
+          My Trips
+        </motion.button>
 
         <motion.button
           onClick={handleLogout}

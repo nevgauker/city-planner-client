@@ -255,4 +255,11 @@ export const submitFeedback = (rating, city, comment, wouldRecommend) =>
 export const submitUpgradeInterest = (reason) =>
   apiClient.post('/feedback/upgrade-interest', { reason }).then((r) => r.data)
 
+// Trip management API
+export const listTrips = () =>
+  apiClient.get('/api/trips').then((r) => r.data)
+
+export const deleteSavedTrip = (id) =>
+  apiClient.delete(`/api/trips/${id}`).then((r) => r.data)
+
 export default apiClient

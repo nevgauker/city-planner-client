@@ -8,6 +8,7 @@ import ItineraryStage from './components/stages/ItineraryStage'
 import GoogleMapProvider from './components/map/GoogleMapProvider'
 import AuthModal from './components/auth/AuthModal.jsx'
 import QuotaBar from './components/ui/QuotaBar.jsx'
+import SavedTripsPanel from './components/ui/SavedTripsPanel.jsx'
 import { useAuth } from './contexts/AuthContext.jsx'
 import type { City, ItineraryDay, WeatherData } from './types/api'
 
@@ -38,6 +39,7 @@ const App: FC = () => {
   const { user, refreshQuota } = useAuth()
   const [currentStage, setCurrentStage] = useState<number>(STAGES.GLOBE)
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showSavedTrips, setShowSavedTrips] = useState(false)
   const [pendingGeneration, setPendingGeneration] = useState(false)
   const [tripData, setTripData] = useState<TripData>({
     city: null,
@@ -120,6 +122,15 @@ const App: FC = () => {
     setCurrentStage(STAGES.DETAILS)
   }
 
+  const handleLoadSavedTrip = (savedTripData: TripData, itinerary: ItineraryDay[]): void => {
+    setTripData((prev) => ({
+      ...prev,
+      ...savedTripData,
+      itinerary,
+    }))
+    setCurrentStage(STAGES.ITINERARY)
+  }
+
   return (
     <GoogleMapProvider>
       <div className="w-full h-screen bg-navy-900 overflow-hidden">
@@ -152,7 +163,10 @@ const App: FC = () => {
           />
         )}
 
-        <QuotaBar onSignInClick={() => setShowAuthModal(true)} />
+        <QuotaBar
+          onSignInClick={() => setShowAuthModal(true)}
+          onViewTrips={() => setShowSavedTrips(true)}
+        />
 
         {showAuthModal && (
           <AuthModal
@@ -161,6 +175,13 @@ const App: FC = () => {
               setShowAuthModal(false)
               setPendingGeneration(false)
             }}
+          />
+        )}
+
+        {showSavedTrips && (
+          <SavedTripsPanel
+            onClose={() => setShowSavedTrips(false)}
+            onLoadTrip={handleLoadSavedTrip}
           />
         )}
 
