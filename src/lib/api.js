@@ -146,4 +146,63 @@ export async function regenerateDay(tripData, dayIndex) {
   }
 }
 
+// LocalStorage management for saved trips
+export function saveTrip(tripId, tripData, itinerary) {
+  const trips = JSON.parse(localStorage.getItem('savedTrips') || '{}')
+  trips[tripId] = {
+    id: tripId,
+    city: tripData.city,
+    homeBase: tripData.homeBase,
+    startDate: tripData.startDate,
+    endDate: tripData.endDate,
+    travelStyles: tripData.travelStyles,
+    pace: tripData.pace,
+    itinerary,
+    savedAt: new Date().toISOString(),
+  }
+  localStorage.setItem('savedTrips', JSON.stringify(trips))
+  return tripId
+}
+
+export function getSavedTrips() {
+  const trips = JSON.parse(localStorage.getItem('savedTrips') || '{}')
+  return Object.values(trips).sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))
+}
+
+export function getTrip(tripId) {
+  const trips = JSON.parse(localStorage.getItem('savedTrips') || '{}')
+  return trips[tripId] || null
+}
+
+export function deleteTrip(tripId) {
+  const trips = JSON.parse(localStorage.getItem('savedTrips') || '{}')
+  delete trips[tripId]
+  localStorage.setItem('savedTrips', JSON.stringify(trips))
+}
+
+// Share link encoding/decoding
+export function encodeTripForShare(tripData, itinerary) {
+  const data = {
+    city: tripData.city,
+    homeBase: tripData.homeBase,
+    startDate: tripData.startDate,
+    endDate: tripData.endDate,
+    travelStyles: tripData.travelStyles,
+    pace: tripData.pace,
+    itinerary,
+  }
+  const json = JSON.stringify(data)
+  return btoa(json)
+}
+
+export function decodeTripFromShare(encoded) {
+  try {
+    const json = atob(encoded)
+    return JSON.parse(json)
+  } catch (error) {
+    console.error('Failed to decode shared trip:', error)
+    return null
+  }
+}
+
 export default apiClient

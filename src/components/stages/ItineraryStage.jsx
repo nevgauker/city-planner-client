@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
-import { generateItinerary, regenerateDay, getWeatherForecast } from '../../lib/api'
+import { generateItinerary, regenerateDay, getWeatherForecast, saveTrip, encodeTripForShare } from '../../lib/api'
 import ItineraryTimeline from '../ui/ItineraryTimeline'
 import GoogleItineraryMap from '../map/GoogleItineraryMap'
 import BackButton from '../ui/BackButton'
@@ -40,7 +40,10 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
         })
 
         setItinerary(result.itinerary)
-        toast.success('Itinerary generated successfully!')
+        // Auto-save to localStorage
+        const tripId = `${tripData.city}-${Date.now()}`
+        saveTrip(tripId, tripData, result.itinerary)
+        toast.success('Itinerary generated & saved!')
       } catch (error) {
         toast.error(error.message || 'Failed to generate itinerary')
         console.error(error)
@@ -73,8 +76,53 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
   }
 
   const handleExportItinerary = () => {
-    // TODO: Implement export functionality
-    toast.info('Export feature coming soon!')
+    if (!itinerary || !tripData) {
+      toast.error('No itinerary to export')
+      return
+    }
+
+    const exportData = {
+      city: tripData.city,
+      homeBase: tripData.homeBase,
+      dates: {
+        start: tripData.startDate,
+        end: tripData.endDate,
+      },
+      preferences: {
+        travelStyles: tripData.travelStyles,
+        pace: tripData.pace,
+      },
+      itinerary,
+      exportedAt: new Date().toISOString(),
+    }
+
+    const jsonString = JSON.stringify(exportData, null, 2)
+    const blob = new Blob([jsonString], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${tripData.city}-itinerary-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+    toast.success('Itinerary exported as JSON!')
+  }
+
+  const handleShareItinerary = () => {
+    if (!itinerary || !tripData) {
+      toast.error('No itinerary to share')
+      return
+    }
+
+    const encoded = encodeTripForShare(tripData, itinerary)
+    const shareUrl = `${window.location.origin}?shared=${encoded}`
+
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      toast.success('Share link copied to clipboard!')
+    }).catch(() => {
+      toast.error('Failed to copy share link')
+    })
   }
 
   if (isLoading) {
@@ -119,13 +167,23 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
           homeBase={tripData.homeBase}
         />
 
-        {/* Export Button */}
-        <button
-          onClick={handleExportItinerary}
-          className="absolute bottom-4 right-4 z-10 px-4 py-2 bg-warm-accent hover:bg-warm-light text-navy-900 rounded-lg font-medium transition-colors"
-        >
-          📥 Export
-        </button>
+        {/* Export & Share Buttons */}
+        <div className="absolute bottom-4 right-4 z-10 flex gap-2">
+          <button
+            onClick={handleShareItinerary}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+            title="Copy share link to clipboard"
+          >
+            🔗 Share
+          </button>
+          <button
+            onClick={handleExportItinerary}
+            className="px-4 py-2 bg-warm-accent hover:bg-warm-light text-navy-900 rounded-lg font-medium transition-colors"
+            title="Download as JSON"
+          >
+            📥 Export
+          </button>
+        </div>
       </div>
     </motion.div>
   )

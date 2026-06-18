@@ -27,6 +27,10 @@ export default function TripDetailsForm({
   onPaceChange,
   onDateChange,
   onSubmit,
+  tripDurationPresets,
+  onTripDurationPreset,
+  stylePresets,
+  onStylePreset,
 }) {
   return (
     <div className="glass-effect card-elevation rounded-lg p-8 space-y-8">
@@ -82,11 +86,56 @@ export default function TripDetailsForm({
             ✈️ {Math.ceil((new Date(formData.endDate) - new Date(formData.startDate)) / (1000 * 60 * 60 * 24))} days
           </div>
         )}
+
+        {/* Quick Duration Presets */}
+        {tripDurationPresets && (
+          <div className="mt-4 space-y-2">
+            <label className="text-xs text-white/60">Quick presets:</label>
+            <div className="grid grid-cols-4 gap-2">
+              {tripDurationPresets.map((preset) => (
+                <motion.button
+                  key={preset.label}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => onTripDurationPreset(preset.days)}
+                  className="px-2 py-1 text-xs bg-white/10 hover:bg-white/20 text-white rounded border border-white/20 transition-colors"
+                >
+                  {preset.label}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Travel Styles */}
       <div className="space-y-4">
         <label className="block text-white font-medium">Travel Styles (select at least one)</label>
+
+        {/* Quick Style Presets */}
+        {stylePresets && (
+          <div className="mb-4 space-y-2">
+            <label className="text-xs text-white/60">Curated styles:</label>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              {Object.keys(stylePresets).map((preset) => (
+                <motion.button
+                  key={preset}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => onStylePreset(preset)}
+                  className={`px-3 py-2 text-xs rounded font-medium transition-all ${
+                    JSON.stringify(formData.travelStyles) === JSON.stringify(stylePresets[preset])
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
+                  }`}
+                >
+                  {preset}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {travelStyles.map((style) => (
             <motion.button

@@ -15,6 +15,21 @@ const TRAVEL_STYLES = [
 
 const PACE_OPTIONS = ['Relaxed', 'Balanced', 'Packed']
 
+const TRAVEL_STYLE_PRESETS = {
+  'Beach Bum': ['Nature', 'Food & Drink', 'Wellness'],
+  'Culture Vulture': ['Culture', 'History', 'Hidden Gems'],
+  'Foodie Paradise': ['Food & Drink', 'Culture', 'Shopping'],
+  'Adventure Seeker': ['Nature', 'Nightlife', 'Hidden Gems'],
+  'Luxury Explorer': ['Shopping', 'Wellness', 'Food & Drink'],
+}
+
+const TRIP_DURATION_PRESETS = [
+  { label: 'Weekend', days: 3 },
+  { label: '1 Week', days: 7 },
+  { label: '2 Weeks', days: 14 },
+  { label: '3 Weeks', days: 21 },
+]
+
 export default function TripDetailsStage({ city, onSubmit, onBack }) {
   // Calculate default dates (tomorrow to 7 days from tomorrow)
   const getDefaultDates = () => {
@@ -64,6 +79,27 @@ export default function TripDetailsStage({ city, onSubmit, onBack }) {
     }))
   }
 
+  const handleTripDurationPreset = (days) => {
+    const start = new Date()
+    start.setDate(start.getDate() + 1)
+    const end = new Date(start)
+    end.setDate(end.getDate() + days - 1)
+
+    const formatDate = (date) => date.toISOString().split('T')[0]
+    setFormData((prev) => ({
+      ...prev,
+      startDate: formatDate(start),
+      endDate: formatDate(end),
+    }))
+  }
+
+  const handleStylePreset = (preset) => {
+    setFormData((prev) => ({
+      ...prev,
+      travelStyles: TRAVEL_STYLE_PRESETS[preset],
+    }))
+  }
+
   const handleSubmit = () => {
     if (!formData.startDate || !formData.endDate) {
       alert('Please select both start and end dates')
@@ -104,6 +140,10 @@ export default function TripDetailsStage({ city, onSubmit, onBack }) {
           onPaceChange={handlePaceChange}
           onDateChange={handleDateChange}
           onSubmit={handleSubmit}
+          tripDurationPresets={TRIP_DURATION_PRESETS}
+          onTripDurationPreset={handleTripDurationPreset}
+          stylePresets={TRAVEL_STYLE_PRESETS}
+          onStylePreset={handleStylePreset}
         />
       </motion.div>
     </motion.div>

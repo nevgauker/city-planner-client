@@ -1,11 +1,12 @@
-import { useState } from 'react'
-import { ToastContainer } from 'react-toastify'
+import { useState, useEffect } from 'react'
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import GlobeStage from './components/stages/GlobeStage'
 import GoogleMapStage from './components/stages/GoogleMapStage'
 import TripDetailsStage from './components/stages/TripDetailsStage'
 import ItineraryStage from './components/stages/ItineraryStage'
 import GoogleMapProvider from './components/map/GoogleMapProvider'
+import { decodeTripFromShare } from './lib/api'
 
 const STAGES = {
   GLOBE: 0,
@@ -26,6 +27,33 @@ export default function App() {
     pace: 'Balanced',
     itinerary: null,
   })
+
+  // Handle shared trips from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const shared = params.get('shared')
+    if (shared) {
+      const sharedTrip = decodeTripFromShare(shared)
+      if (sharedTrip) {
+        setTripData({
+          city: sharedTrip.city,
+          homeBase: sharedTrip.homeBase,
+          startDate: sharedTrip.startDate,
+          endDate: sharedTrip.endDate,
+          travelStyles: sharedTrip.travelStyles,
+          pace: sharedTrip.pace,
+          itinerary: sharedTrip.itinerary,
+          coordinates: null,
+        })
+        setCurrentStage(STAGES.ITINERARY)
+        toast.success('Shared itinerary loaded!')
+      } else {
+        toast.error('Failed to load shared itinerary')
+      }
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+  }, [])
 
   const handleCitySelected = (city, coordinates) => {
     setTripData((prev) => ({

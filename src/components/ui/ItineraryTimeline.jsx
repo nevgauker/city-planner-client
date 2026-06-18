@@ -39,10 +39,17 @@ export default function ItineraryTimeline({
               <h3 className="text-lg font-bold text-white">
                 Day {dayIndex + 1} {' '} {formatDate(day.date)}
               </h3>
-              <div className="flex items-center gap-2 mt-2 text-sm text-white/70">
-                <span>{getWeatherIcon(day.weatherCode)}</span>
-                <span>{getWeatherDescription(day.weatherCode)}</span>
-                <span className="text-warm-accent font-medium">{day.temperature}°C</span>
+              <div className="flex items-center gap-3 mt-2 text-sm text-white/70">
+                <div className="flex items-center gap-1">
+                  <span>{getWeatherIcon(day.weatherCode)}</span>
+                  <span>{getWeatherDescription(day.weatherCode)}</span>
+                  <span className="text-warm-accent font-medium">{day.temperature}°C</span>
+                </div>
+                {day.budget_usd && (
+                  <div className="px-2 py-1 bg-green-600/20 rounded text-green-400 text-xs font-medium">
+                    💰 ${day.budget_usd}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -92,9 +99,14 @@ export default function ItineraryTimeline({
                   <div className="flex-1">
                     <p className="font-medium text-white mb-1">{activity.activity}</p>
                     <p className="text-sm text-white/70">{activity.place_name}</p>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-white/50">
+                    <div className="flex items-center gap-2 mt-2 text-xs text-white/50 flex-wrap">
                       <span className="px-2 py-1 bg-white/10 rounded">{activity.category}</span>
                       <span>⏱️ {activity.duration_minutes} min</span>
+                      {activity.budget_usd && (
+                        <span className="px-2 py-1 bg-green-600/20 rounded text-green-400 font-medium">
+                          ${activity.budget_usd}
+                        </span>
+                      )}
                     </div>
                     {activity.notes && (
                       <p className="text-xs text-white/60 mt-2 italic">{activity.notes}</p>
