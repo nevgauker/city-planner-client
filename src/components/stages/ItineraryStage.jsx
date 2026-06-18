@@ -107,32 +107,7 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
       return
     }
 
-    const exportData = {
-      city: tripData.city,
-      homeBase: tripData.homeBase,
-      dates: {
-        start: tripData.startDate,
-        end: tripData.endDate,
-      },
-      preferences: {
-        travelStyles: tripData.travelStyles,
-        pace: tripData.pace,
-      },
-      itinerary,
-      exportedAt: new Date().toISOString(),
-    }
-
-    const jsonString = JSON.stringify(exportData, null, 2)
-    const blob = new Blob([jsonString], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `${tripData.city}-itinerary-${new Date().toISOString().split('T')[0]}.json`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-    toast.success('Itinerary exported as JSON!')
+    window.print()
   }
 
   const handleShareItinerary = () => {
@@ -243,9 +218,9 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
           <button
             onClick={handleExportItinerary}
             className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-warm-accent hover:bg-warm-light text-navy-900 rounded-lg font-medium transition-colors whitespace-nowrap"
-            title="Download as JSON"
+            title="Print or save as PDF"
           >
-            📥 Export
+            🖨️ Print
           </button>
         </div>
       </div>
