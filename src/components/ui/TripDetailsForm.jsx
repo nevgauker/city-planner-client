@@ -33,11 +33,11 @@ export default function TripDetailsForm({
   onStylePreset,
 }) {
   return (
-    <div className="glass-effect card-elevation rounded-lg p-8 space-y-8">
+    <div className="glass-effect card-elevation rounded-lg p-4 sm:p-8 space-y-6 sm:space-y-8">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-white mb-2">Plan Your {city} Trip</h2>
-        <p className="text-white/60">Tell us about your travel preferences</p>
+        <h2 className="text-xl sm:text-3xl font-bold text-white mb-2">Plan Your {city} Trip</h2>
+        <p className="text-xs sm:text-base text-white/60">Tell us about your travel preferences</p>
       </div>
 
       {/* Date Range */}
@@ -46,7 +46,7 @@ export default function TripDetailsForm({
           <Calendar className="w-5 h-5 text-warm-accent" />
           Travel Dates
         </label>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="text-xs text-white/60 mb-1 block">Start Date (DD/MM/YYYY)</label>
             <input
@@ -91,7 +91,7 @@ export default function TripDetailsForm({
         {tripDurationPresets && (
           <div className="mt-4 space-y-2">
             <label className="text-xs text-white/60">Quick presets:</label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {tripDurationPresets.map((preset) => (
                 <motion.button
                   key={preset.label}
@@ -116,7 +116,7 @@ export default function TripDetailsForm({
         {stylePresets && (
           <div className="mb-4 space-y-2">
             <label className="text-xs text-white/60">Curated styles:</label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
               {Object.keys(stylePresets).map((preset) => (
                 <motion.button
                   key={preset}
@@ -161,7 +161,7 @@ export default function TripDetailsForm({
           <Zap className="w-5 h-5 text-warm-accent" />
           Travel Pace
         </label>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {paceOptions.map((pace) => (
             <motion.button
               key={pace}
@@ -198,7 +198,7 @@ export default function TripDetailsForm({
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onSubmit}
-        className="w-full px-6 py-3 bg-warm-accent hover:bg-warm-light text-navy-900 font-bold rounded-lg transition-colors text-lg"
+        className="w-full px-4 sm:px-6 py-3 bg-warm-accent hover:bg-warm-light text-navy-900 font-bold rounded-lg transition-colors text-base sm:text-lg"
       >
         Plan My Trip ✈️
       </motion.button>

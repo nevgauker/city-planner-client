@@ -168,17 +168,17 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
         />
 
         {/* Export & Share Buttons */}
-        <div className="absolute bottom-4 right-4 z-10 flex gap-2">
+        <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-10 flex gap-2 flex-col sm:flex-row">
           <button
             onClick={handleShareItinerary}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+            className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
             title="Copy share link to clipboard"
           >
             🔗 Share
           </button>
           <button
             onClick={handleExportItinerary}
-            className="px-4 py-2 bg-warm-accent hover:bg-warm-light text-navy-900 rounded-lg font-medium transition-colors"
+            className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-warm-accent hover:bg-warm-light text-navy-900 rounded-lg font-medium transition-colors whitespace-nowrap"
             title="Download as JSON"
           >
             📥 Export

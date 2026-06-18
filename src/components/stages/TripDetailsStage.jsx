@@ -119,7 +119,7 @@ export default function TripDetailsStage({ city, onSubmit, onBack }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="relative w-full h-full bg-gradient-to-b from-navy-900 to-navy-800 flex items-center justify-center p-4"
+      className="relative w-full h-full bg-gradient-to-b from-navy-900 to-navy-800 flex flex-col items-center justify-center p-3 sm:p-4 overflow-y-auto"
     >
       {/* Back Button */}
       <BackButton onClick={onBack} />
@@ -129,7 +129,7 @@ export default function TripDetailsStage({ city, onSubmit, onBack }) {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="w-full max-w-2xl"
+        className="w-full max-w-2xl my-4"
       >
         <TripDetailsForm
           city={city}
