@@ -168,6 +168,28 @@ export async function regenerateDay(tripData, dayIndex) {
   }
 }
 
+export async function swapActivity(city, dayIndex, blockType, currentActivity, travelStyles, pace) {
+  try {
+    const response = await apiClient.post('/api/swap-activity', {
+      city,
+      homeBase: {
+        lat: 0,
+        lng: 0,
+        address: '',
+      },
+      dayIndex,
+      blockType,
+      currentActivity,
+      travelStyles,
+      pace,
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error swapping activity:', error)
+    throw new Error(error.response?.data?.message || 'Failed to swap activity')
+  }
+}
+
 // LocalStorage management for saved trips
 export function saveTrip(tripId, tripData, itinerary) {
   const trips = JSON.parse(localStorage.getItem('savedTrips') || '{}')

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { RotateCw, Cloud, Droplets } from 'lucide-react'
+import { RotateCw, Cloud, Droplets, RefreshCw } from 'lucide-react'
 import { formatDate, getWeatherIcon, getWeatherDescription, getDayNumber } from '../../lib/utils'
 
 export default function ItineraryTimeline({
@@ -9,6 +9,8 @@ export default function ItineraryTimeline({
   onRegenerateDay,
   isRegenerating,
   regeneratingDay,
+  onSwapActivity,
+  swappingActivity,
 }) {
   if (!itinerary || itinerary.length === 0) {
     return <div className="p-6 text-white/60">No itinerary data available</div>
@@ -112,6 +114,25 @@ export default function ItineraryTimeline({
                       <p className="text-xs text-white/60 mt-2 italic">{activity.notes}</p>
                     )}
                   </div>
+
+                  {/* Swap Activity Button */}
+                  <motion.button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onSwapActivity?.(dayIndex, period, activity)
+                    }}
+                    disabled={swappingActivity === `${dayIndex}-${period}`}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="p-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50 flex-shrink-0"
+                    title="Try a different activity"
+                  >
+                    <RefreshCw
+                      className={`w-4 h-4 text-warm-accent ${
+                        swappingActivity === `${dayIndex}-${period}` ? 'animate-spin' : ''
+                      }`}
+                    />
+                  </motion.button>
                 </div>
               </motion.button>
             )

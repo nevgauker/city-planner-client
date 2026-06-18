@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
-import { generateItinerary, regenerateDay, getWeatherForecast, saveTrip, encodeTripForShare, saveTripToBackend } from '../../lib/api'
+import { generateItinerary, regenerateDay, getWeatherForecast, saveTrip, encodeTripForShare, saveTripToBackend, swapActivity } from '../../lib/api'
 import { generateICS, downloadICS } from '../../lib/utils'
 import ItineraryTimeline from '../ui/ItineraryTimeline'
 import GoogleItineraryMap from '../map/GoogleItineraryMap'
@@ -16,6 +16,7 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
   const [regeneratingDay, setRegeneratingDay] = useState(null)
   const [showFeedback, setShowFeedback] = useState(false)
   const [feedbackRating, setFeedbackRating] = useState(0)
+  const [swappingActivity, setSwappingActivity] = useState(null)
 
   useEffect(() => {
     const generateItineraryData = async () => {
@@ -142,6 +143,35 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
     }
   }
 
+  const handleSwapActivity = async (dayIndex, blockType, currentActivity) => {
+    const key = `${dayIndex}-${blockType}`
+    setSwappingActivity(key)
+
+    try {
+      const result = await swapActivity(
+        tripData.city,
+        dayIndex,
+        blockType,
+        currentActivity,
+        tripData.travelStyles,
+        tripData.pace
+      )
+
+      setItinerary((prev) => {
+        const updated = [...prev]
+        updated[dayIndex].blocks[blockType] = result.block
+        return updated
+      })
+
+      toast.success('Activity swapped!')
+    } catch (error) {
+      console.error('Error swapping activity:', error)
+      toast.error(error.message || 'Failed to swap activity')
+    } finally {
+      setSwappingActivity(null)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-navy-900">
@@ -173,6 +203,8 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
           onRegenerateDay={handleRegenerateDayClick}
           isRegenerating={isRegenerating}
           regeneratingDay={regeneratingDay}
+          onSwapActivity={handleSwapActivity}
+          swappingActivity={swappingActivity}
         />
       </div>
 
