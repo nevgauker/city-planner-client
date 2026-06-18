@@ -36,7 +36,8 @@ interface TripData {
 }
 
 const App: FC = () => {
-  const { user, refreshQuota } = useAuth() as any
+  const authContext = useAuth() as any
+  const { user, refreshQuota } = authContext
   const [currentStage, setCurrentStage] = useState<number>(STAGES.GLOBE)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showSavedTrips, setShowSavedTrips] = useState(false)
