@@ -168,15 +168,11 @@ export async function regenerateDay(tripData, dayIndex) {
   }
 }
 
-export async function swapActivity(city, dayIndex, blockType, currentActivity, travelStyles, pace) {
+export async function swapActivity(city, dayIndex, blockType, currentActivity, travelStyles, pace, homeBase) {
   try {
     const response = await apiClient.post('/api/swap-activity', {
       city,
-      homeBase: {
-        lat: 0,
-        lng: 0,
-        address: '',
-      },
+      homeBase,
       dayIndex,
       blockType,
       currentActivity,
@@ -266,10 +262,10 @@ export const saveTripToBackend = (city, title, startDate, endDate, travelStyles,
       title,
       startDate,
       endDate,
-      travelStyles: JSON.stringify(travelStyles),
+      travelStyles,
       pace,
-      homeBase: JSON.stringify(homeBase),
-      itineraryData: JSON.stringify(itineraryData),
+      homeBase,
+      itineraryData,
     })
     .then((r) => r.data)
 

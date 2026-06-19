@@ -8,9 +8,9 @@ import GoogleItineraryMap from '../map/GoogleItineraryMap'
 import BackButton from '../ui/BackButton'
 import FeedbackModal from '../ui/FeedbackModal.jsx'
 
-export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
-  const [itinerary, setItinerary] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+export default function ItineraryStage({ tripData, onRegenerateDay, onBack, existingItinerary }) {
+  const [itinerary, setItinerary] = useState(existingItinerary || null)
+  const [isLoading, setIsLoading] = useState(!existingItinerary)
   const [selectedActivityIndex, setSelectedActivityIndex] = useState(null)
   const [isRegenerating, setIsRegenerating] = useState(false)
   const [regeneratingDay, setRegeneratingDay] = useState(null)
@@ -19,6 +19,11 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
   const [swappingActivity, setSwappingActivity] = useState(null)
 
   useEffect(() => {
+    if (existingItinerary) {
+      setIsLoading(false)
+      return
+    }
+
     const generateItineraryData = async () => {
       try {
         // Try to fetch weather data (but it's optional)
@@ -159,7 +164,8 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
         blockType,
         currentActivity,
         tripData.travelStyles,
-        tripData.pace
+        tripData.pace,
+        tripData.homeBase
       )
 
       setItinerary((prev) => {

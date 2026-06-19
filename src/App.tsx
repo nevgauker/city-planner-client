@@ -42,6 +42,7 @@ const App: FC = () => {
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showSavedTrips, setShowSavedTrips] = useState(false)
   const [pendingGeneration, setPendingGeneration] = useState(false)
+  const [existingItinerary, setExistingItinerary] = useState<ItineraryDay[] | null>(null)
   const [tripData, setTripData] = useState<TripData>({
     city: null,
     coordinates: null,
@@ -83,6 +84,7 @@ const App: FC = () => {
 
   const handleTripDetailsSubmit = (details: TripDetails): void => {
     console.log('🔍 handleTripDetailsSubmit called, user:', user)
+    setExistingItinerary(null)
     setTripData((prev) => ({
       ...prev,
       startDate: details.startDate,
@@ -127,8 +129,8 @@ const App: FC = () => {
     setTripData((prev) => ({
       ...prev,
       ...savedTripData,
-      itinerary,
     }))
+    setExistingItinerary(itinerary)
     setCurrentStage(STAGES.ITINERARY)
   }
 
@@ -161,6 +163,7 @@ const App: FC = () => {
             tripData={tripData}
             onRegenerateDay={handleRegenerateDay}
             onBack={handleBackToDetails}
+            existingItinerary={existingItinerary}
           />
         )}
 
