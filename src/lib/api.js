@@ -259,11 +259,16 @@ export const registerUser = (email, password) =>
 export const fetchMe = () => apiClient.get('/api/auth/me').then((r) => r.data)
 
 // Backend trip persistence
-export const saveTripToBackend = (city, title, itineraryData) =>
+export const saveTripToBackend = (city, title, startDate, endDate, travelStyles, pace, homeBase, itineraryData) =>
   apiClient
     .post('/api/trips', {
       city,
       title,
+      startDate,
+      endDate,
+      travelStyles: JSON.stringify(travelStyles),
+      pace,
+      homeBase: JSON.stringify(homeBase),
       itineraryData: JSON.stringify(itineraryData),
     })
     .then((r) => r.data)

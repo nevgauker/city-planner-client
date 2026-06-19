@@ -54,6 +54,11 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack }) {
           await saveTripToBackend(
             tripData.city,
             `${tripData.city} Trip`,
+            tripData.startDate,
+            tripData.endDate,
+            tripData.travelStyles,
+            tripData.pace,
+            tripData.homeBase,
             result.itinerary,
           )
         } catch (err) {
