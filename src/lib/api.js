@@ -271,11 +271,11 @@ export const saveTripToBackend = (city, title, itineraryData) =>
 // Feedback API functions
 export const submitFeedback = (rating, city, comment, wouldRecommend) =>
   apiClient
-    .post('/feedback', { rating, city, comment, wouldRecommend })
+    .post('/api/feedback', { rating, city, comment, wouldRecommend })
     .then((r) => r.data)
 
 export const submitUpgradeInterest = (reason) =>
-  apiClient.post('/feedback/upgrade-interest', { reason }).then((r) => r.data)
+  apiClient.post('/api/feedback/upgrade-interest', { reason }).then((r) => r.data)
 
 // Trip management API
 export const listTrips = () =>
