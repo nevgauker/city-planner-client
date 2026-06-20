@@ -203,10 +203,12 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack, exis
       className="relative w-full h-full bg-navy-900 flex flex-col md:flex-row"
     >
       {/* Back Button */}
-      <BackButton onClick={onBack} />
+      <div className="no-print">
+        <BackButton onClick={onBack} />
+      </div>
 
       {/* Timeline Panel - Left */}
-      <div className="w-full md:w-1/3 lg:w-2/5 h-1/2 md:h-full overflow-y-auto border-r border-white/10">
+      <div className="w-full md:w-1/3 lg:w-2/5 h-1/2 md:h-full overflow-y-auto border-r border-white/10 print:border-0 print:h-auto print:w-full print:overflow-visible">
         <ItineraryTimeline
           itinerary={itinerary}
           selectedActivityIndex={selectedActivityIndex}
@@ -220,7 +222,7 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack, exis
       </div>
 
       {/* Map Panel - Right */}
-      <div className="w-full md:w-2/3 lg:w-3/5 h-1/2 md:h-full relative">
+      <div className="no-print w-full md:w-2/3 lg:w-3/5 h-1/2 md:h-full relative">
         <GoogleItineraryMap
           itinerary={itinerary}
           selectedActivityIndex={selectedActivityIndex}
@@ -243,7 +245,7 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack, exis
         </motion.button>
 
         {/* Export & Share Buttons */}
-        <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-10 flex gap-2 flex-col sm:flex-row">
+        <div className="no-print absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-10 flex gap-2 flex-col sm:flex-row">
           <button
             onClick={handleShareItinerary}
             className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
