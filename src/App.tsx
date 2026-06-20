@@ -1,5 +1,5 @@
-import { useState, FC, ReactNode } from 'react'
-import { ToastContainer } from 'react-toastify'
+import { useState, useEffect, FC, ReactNode } from 'react'
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import GlobeStage from './components/stages/GlobeStage'
 import GoogleMapStage from './components/stages/GoogleMapStage'
@@ -10,6 +10,7 @@ import AuthModal from './components/auth/AuthModal.jsx'
 import QuotaBar from './components/ui/QuotaBar.jsx'
 import SavedTripsPanel from './components/ui/SavedTripsPanel.jsx'
 import { useAuth } from './contexts/AuthContext.jsx'
+import { decodeTripFromShare } from './lib/api'
 import type { City, ItineraryDay, WeatherData } from './types/api'
 
 const STAGES = {
@@ -53,6 +54,28 @@ const App: FC = () => {
     pace: 'Balanced',
     itinerary: null,
   })
+
+  // Check for shared trip URL on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const sharedData = params.get('shared')
+
+    if (sharedData) {
+      const decoded = decodeTripFromShare(sharedData)
+      if (decoded) {
+        const { itinerary, ...trip } = decoded
+        setTripData(prev => ({
+          ...prev,
+          ...trip,
+        }))
+        setExistingItinerary(itinerary)
+        setCurrentStage(STAGES.ITINERARY)
+        toast.success('Shared trip loaded!')
+      } else {
+        toast.error('Failed to load shared trip')
+      }
+    }
+  }, [])
 
   const handleCitySelected = (city: string, coordinates: [number, number]): void => {
     setTripData((prev) => ({
