@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { Mail, Lock } from 'lucide-react';
 
@@ -31,12 +32,16 @@ export default function AuthModal({ onSuccess, onClose }) {
       }
     }
 
-    const result =
-      tab === 'signin'
-        ? await login(email, password)
-        : await register(email, password);
+    const isSignup = tab === 'signup';
+    const result = isSignup
+      ? await register(email, password)
+      : await login(email, password);
 
     if (result.success) {
+      if (isSignup && !localStorage.getItem('beta_welcomed')) {
+        toast.success('Welcome to the City Planner beta! 🎉 You have 10 free itineraries. Use the 💬 button to leave feedback.');
+        localStorage.setItem('beta_welcomed', '1');
+      }
       onSuccess();
     } else {
       setLocalError(result.error || 'Authentication failed');
