@@ -115,9 +115,22 @@ body {
     padding: 0.5in !important;
     font-size: 11pt;
     line-height: 1.4;
+    height: auto !important;
+    min-height: auto !important;
   }
 
-  /* Timeline full width */
+  /* Remove all height restrictions */
+  * {
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+  }
+
+  html, body {
+    height: auto !important;
+  }
+
+  /* Timeline full width and height auto */
   .print\:w-full {
     width: 100% !important;
   }
@@ -132,6 +145,10 @@ body {
 
   .print\:border-0 {
     border: none !important;
+  }
+
+  .print\:max-h-none {
+    max-height: none !important;
   }
 
   /* Day containers - avoid breaking */

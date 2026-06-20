@@ -208,7 +208,7 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack, exis
       </div>
 
       {/* Timeline Panel - Left */}
-      <div className="w-full md:w-1/3 lg:w-2/5 h-1/2 md:h-full overflow-y-auto border-r border-white/10 print:border-0 print:h-auto print:w-full print:overflow-visible">
+      <div className="w-full md:w-1/3 lg:w-2/5 h-1/2 md:h-full overflow-y-auto border-r border-white/10 print:border-0 print:h-auto print:w-full print:overflow-visible print:max-h-none">
         <ItineraryTimeline
           itinerary={itinerary}
           selectedActivityIndex={selectedActivityIndex}
