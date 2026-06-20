@@ -150,7 +150,14 @@ export function generateICS(itinerary, city) {
   const formatDateTime = (dateStr, hour) => {
     const date = new Date(dateStr)
     date.setHours(hour, 0, 0, 0)
-    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+    // Format in local timezone to avoid UTC shift
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    const seconds = String(date.getSeconds()).padStart(2, '0')
+    return `${year}${month}${day}T${hours}${minutes}${seconds}`
   }
 
   const escapeText = (text) => {

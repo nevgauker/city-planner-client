@@ -3,12 +3,14 @@ import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
 import { generateItinerary, regenerateDay, getWeatherForecast, saveTrip, encodeTripForShare, saveTripToBackend, swapActivity } from '../../lib/api'
 import { generateICS, downloadICS } from '../../lib/utils'
+import { useAuth } from '../../contexts/AuthContext.jsx'
 import ItineraryTimeline from '../ui/ItineraryTimeline'
 import GoogleItineraryMap from '../map/GoogleItineraryMap'
 import BackButton from '../ui/BackButton'
 import FeedbackModal from '../ui/FeedbackModal.jsx'
 
 export default function ItineraryStage({ tripData, onRegenerateDay, onBack, existingItinerary }) {
+  const { refreshQuota } = useAuth() || {}
   const [itinerary, setItinerary] = useState(existingItinerary || null)
   const [isLoading, setIsLoading] = useState(!existingItinerary)
   const [selectedActivityIndex, setSelectedActivityIndex] = useState(null)
@@ -72,6 +74,11 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack, exis
 
         toast.success('Itinerary generated & saved!')
 
+        // Refresh quota to sync server-side usage
+        if (refreshQuota) {
+          refreshQuota()
+        }
+
         // Show feedback modal after 8 seconds
         setTimeout(() => {
           const alreadyRated = localStorage.getItem(
@@ -104,6 +111,11 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack, exis
         return updated
       })
       toast.success('Day regenerated successfully!')
+
+      // Refresh quota to sync server-side regeneration count
+      if (refreshQuota) {
+        refreshQuota()
+      }
     } catch (error) {
       toast.error(error.message || 'Failed to regenerate day')
     } finally {
@@ -175,6 +187,11 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack, exis
       })
 
       toast.success('Activity swapped!')
+
+      // Refresh quota to sync server-side usage
+      if (refreshQuota) {
+        refreshQuota()
+      }
     } catch (error) {
       console.error('Error swapping activity:', error)
       toast.error(error.message || 'Failed to swap activity')
