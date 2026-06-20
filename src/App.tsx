@@ -10,6 +10,7 @@ import AuthModal from './components/auth/AuthModal.jsx'
 import QuotaBar from './components/ui/QuotaBar.jsx'
 import SavedTripsPanel from './components/ui/SavedTripsPanel.jsx'
 import { useAuth } from './contexts/AuthContext.jsx'
+// @ts-ignore - TypeScript has trouble with .js file exports, but function exists at runtime
 import { decodeTripFromShare } from './lib/api.js'
 import type { City, ItineraryDay, WeatherData } from './types/api'
 
