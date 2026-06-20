@@ -10,7 +10,7 @@ import AuthModal from './components/auth/AuthModal.jsx'
 import QuotaBar from './components/ui/QuotaBar.jsx'
 import SavedTripsPanel from './components/ui/SavedTripsPanel.jsx'
 import { useAuth } from './contexts/AuthContext.jsx'
-import { decodeTripFromShare } from './lib/api'
+import { decodeTripFromShare } from './lib/api.js'
 import type { City, ItineraryDay, WeatherData } from './types/api'
 
 const STAGES = {
