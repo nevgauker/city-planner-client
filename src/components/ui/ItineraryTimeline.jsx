@@ -61,7 +61,7 @@ export default function ItineraryTimeline({
               whileTap={{ scale: 0.95 }}
               onClick={() => onRegenerateDay(dayIndex)}
               disabled={isRegenerating && regeneratingDay === dayIndex}
-              className="p-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
+              className="no-print p-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
               title="Regenerate this day"
             >
               <RotateCw
