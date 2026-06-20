@@ -124,7 +124,7 @@ export default function ItineraryTimeline({
                     disabled={swappingActivity === `${dayIndex}-${period}`}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="p-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50 flex-shrink-0"
+                    className="no-print p-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50 flex-shrink-0"
                     title="Try a different activity"
                   >
                     <RefreshCw

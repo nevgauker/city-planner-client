@@ -108,12 +108,13 @@ body {
   }
 
   /* Print document styling */
-  body {
+  html, body {
     background: white !important;
     color: #000 !important;
     margin: 0 !important;
     padding: 0.5in !important;
-    font-size: 12pt;
+    font-size: 11pt;
+    line-height: 1.4;
   }
 
   /* Timeline full width */
@@ -133,18 +134,32 @@ body {
     border: none !important;
   }
 
+  /* Day containers - avoid breaking */
+  [class*='day'] {
+    page-break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+
   /* Day cards and activity blocks */
   .glass-effect {
     background: white !important;
-    border: 1px solid #ccc !important;
+    border: 1px solid #333 !important;
     color: #000 !important;
+    page-break-inside: avoid;
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+  }
+
+  /* Activity blocks stay together */
+  [class*='block'] {
     page-break-inside: avoid;
   }
 
   /* Headers don't break */
-  h1, h2, h3, h4 {
+  h1, h2, h3, h4, h5, h6 {
     page-break-after: avoid;
     color: #000 !important;
+    margin: 0.5rem 0;
   }
 
   /* Preserve text content */
@@ -152,15 +167,10 @@ body {
     color: #000 !important;
   }
 
-  /* Remove backgrounds but keep borders */
+  /* Remove backgrounds but keep borders for readability */
   * {
     background-color: transparent !important;
     box-shadow: none !important;
-  }
-
-  /* Activity text styling */
-  .activity {
-    page-break-inside: avoid;
   }
 
   /* Link underlines for print */
@@ -188,8 +198,30 @@ body {
     color: #666 !important;
   }
 
+  .text-white\/80,
+  .text-white\/70 {
+    color: #333 !important;
+  }
+
   /* Border styling for print */
-  .border-white\/10 {
+  .border-white\/10,
+  .border-white\/20 {
     border-color: #ccc !important;
+  }
+
+  /* Remove animations */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Clean margins and padding */
+  ul, ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+  }
+
+  li {
+    margin: 0.25rem 0;
   }
 }

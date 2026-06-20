@@ -167,10 +167,12 @@ const App: FC = () => {
           />
         )}
 
-        <QuotaBar
-          onSignInClick={() => setShowAuthModal(true)}
-          onViewTrips={() => setShowSavedTrips(true)}
-        />
+        <div className="no-print">
+          <QuotaBar
+            onSignInClick={() => setShowAuthModal(true)}
+            onViewTrips={() => setShowSavedTrips(true)}
+          />
+        </div>
 
         {showAuthModal && (
           <AuthModal
