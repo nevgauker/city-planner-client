@@ -48,36 +48,48 @@ export default function TripDetailsForm({
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-white/60 mb-1 block">Start Date (DD/MM/YYYY)</label>
-            <input
-              type="text"
-              placeholder="DD/MM/YYYY"
-              value={formatDateDisplay(formData.startDate)}
-              onChange={(e) => {
-                const internalFormat = formatDateInternal(e.target.value)
-                if (internalFormat) {
-                  onDateChange('startDate', internalFormat)
-                }
-              }}
-              maxLength="10"
-              className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-warm-accent"
-            />
+            <label className="text-xs text-white/60 mb-1 block">Start Date</label>
+            <div className="flex gap-2">
+              <input
+                type="date"
+                value={formData.startDate}
+                onChange={(e) => onDateChange('startDate', e.target.value)}
+                className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-warm-accent"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const input = document.querySelector('input[type="date"]')
+                  if (input) input.click()
+                }}
+                className="px-3 py-2 bg-warm-accent/20 border border-warm-accent/50 rounded-lg hover:bg-warm-accent/30 transition-colors"
+              >
+                📅
+              </button>
+            </div>
+            <p className="text-xs text-white/40 mt-1">Selected: {formatDateDisplay(formData.startDate)}</p>
           </div>
           <div>
-            <label className="text-xs text-white/60 mb-1 block">End Date (DD/MM/YYYY)</label>
-            <input
-              type="text"
-              placeholder="DD/MM/YYYY"
-              value={formatDateDisplay(formData.endDate)}
-              onChange={(e) => {
-                const internalFormat = formatDateInternal(e.target.value)
-                if (internalFormat) {
-                  onDateChange('endDate', internalFormat)
-                }
-              }}
-              maxLength="10"
-              className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-warm-accent"
-            />
+            <label className="text-xs text-white/60 mb-1 block">End Date</label>
+            <div className="flex gap-2">
+              <input
+                type="date"
+                value={formData.endDate}
+                onChange={(e) => onDateChange('endDate', e.target.value)}
+                className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-warm-accent"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const inputs = document.querySelectorAll('input[type="date"]')
+                  if (inputs.length > 1) inputs[1].click()
+                }}
+                className="px-3 py-2 bg-warm-accent/20 border border-warm-accent/50 rounded-lg hover:bg-warm-accent/30 transition-colors"
+              >
+                📅
+              </button>
+            </div>
+            <p className="text-xs text-white/40 mt-1">Selected: {formatDateDisplay(formData.endDate)}</p>
           </div>
         </div>
         {/* Show trip duration */}
