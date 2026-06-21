@@ -68,6 +68,19 @@ export default function GlobeStage({ onCitySelected }) {
       {/* 3D Globe Canvas */}
       <GlobeCanvas ref={globeRef} />
 
+      {/* Branding Header */}
+      <div className="absolute top-4 left-4 z-10">
+        <div className="text-white">
+          <div className="flex items-center gap-2">
+            <span className="text-3xl">🌍</span>
+            <div>
+              <h1 className="text-xl font-bold">City Planner</h1>
+              <p className="text-xs text-white/60">AI-powered travel itineraries</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Search Bar Overlay */}
       <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10 w-full max-w-md px-4">
         <CitySearch
