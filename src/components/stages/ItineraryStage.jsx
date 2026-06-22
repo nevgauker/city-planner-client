@@ -20,6 +20,8 @@ export default function ItineraryStage({ tripData, onRegenerateDay, onBack, exis
   const [feedbackRating, setFeedbackRating] = useState(0)
   const [swappingActivity, setSwappingActivity] = useState(null)
 
+  console.log('📍 ItineraryStage received homeBase:', tripData?.homeBase)
+
   useEffect(() => {
     if (existingItinerary) {
       setIsLoading(false)

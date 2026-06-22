@@ -50,7 +50,10 @@ const darkMapStyle = [
 ]
 
 export default function GoogleItineraryMap({ itinerary, selectedActivityIndex, homeBase }) {
+  console.log('🗺️ GoogleItineraryMap received homeBase:', homeBase, 'Type:', typeof homeBase)
+
   if (!itinerary || itinerary.length === 0 || !homeBase) {
+    console.log('⚠️ Missing data for map:', { itinerary: !!itinerary, homeBase: !!homeBase })
     return (
       <div className="w-full h-full flex items-center justify-center bg-navy-800">
         <p className="text-white/60">Loading map...</p>
@@ -60,7 +63,11 @@ export default function GoogleItineraryMap({ itinerary, selectedActivityIndex, h
 
   const toNumber = (val) => {
     const num = Number(val)
-    return isFinite(num) ? num : 0
+    const result = isFinite(num) ? num : 0
+    if (val !== result) {
+      console.log('🔢 toNumber conversion:', { input: val, output: result, type: typeof val })
+    }
+    return result
   }
 
   // Flatten all activities
