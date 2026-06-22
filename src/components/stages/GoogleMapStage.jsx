@@ -85,7 +85,7 @@ export default function GoogleMapStage({ city, coordinates, onHomeBaseSelected, 
 
   const mapOptions = {
     zoom: 14,
-    center: { lat: coordinates.lat, lng: coordinates.lng },
+    center: { lat: coordinates[0], lng: coordinates[1] },
     mapTypeControl: false,
     fullscreenControl: false,
     streetViewControl: false,
