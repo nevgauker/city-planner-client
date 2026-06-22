@@ -6,7 +6,7 @@ import { ChevronDown } from 'lucide-react';
 import { toast } from 'react-toastify';
 import AccountMenu from './AccountMenu.jsx';
 
-export default function QuotaBar({ onSignInClick, onViewTrips }) {
+export default function QuotaBar({ onSignInClick, onViewTrips, onLogout }) {
   const { user, quota } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
   const [hasNotified, setHasNotified] = useState(
@@ -119,7 +119,7 @@ export default function QuotaBar({ onSignInClick, onViewTrips }) {
       </div>
 
       {showMenu && (
-        <AccountMenu onClose={() => setShowMenu(false)} quota={quota} onViewTrips={onViewTrips} />
+        <AccountMenu onClose={() => setShowMenu(false)} quota={quota} onViewTrips={onViewTrips} onLogout={onLogout} />
       )}
     </motion.div>
   );

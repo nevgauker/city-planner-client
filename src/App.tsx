@@ -179,6 +179,25 @@ const App: FC = () => {
     setCurrentStage(STAGES.ITINERARY)
   }
 
+  const handleLogout = (): void => {
+    console.log('👋 User logged out, returning to globe')
+    setCurrentStage(STAGES.GLOBE)
+    setTripData({
+      city: null,
+      coordinates: null,
+      homeBase: null,
+      startDate: null,
+      endDate: null,
+      travelStyles: [],
+      pace: 'Balanced',
+      itinerary: null,
+    })
+    setShowSavedTrips(false)
+    setShowAuthModal(false)
+    setPendingGeneration(false)
+    setPendingCity(null)
+  }
+
   return (
     <GoogleMapProvider>
       <div className="w-full h-screen bg-navy-900 overflow-hidden">
@@ -216,6 +235,7 @@ const App: FC = () => {
           <QuotaBar
             onSignInClick={() => setShowAuthModal(true)}
             onViewTrips={() => setShowSavedTrips(true)}
+            onLogout={handleLogout}
           />
         </div>
 

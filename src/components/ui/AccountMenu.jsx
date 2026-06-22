@@ -2,11 +2,12 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { LogOut, Archive } from 'lucide-react';
 
-export default function AccountMenu({ onClose, quota, onViewTrips }) {
+export default function AccountMenu({ onClose, quota, onViewTrips, onLogout }) {
   const { user, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
+    onLogout?.();
     onClose();
   };
 
