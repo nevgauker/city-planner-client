@@ -80,6 +80,8 @@ const App: FC = () => {
   }, [])
 
   const handleCitySelected = (city: string, coordinates: [number, number]): void => {
+    console.log('🌍 City selected:', { city, coordinates, type: typeof coordinates })
+
     if (!user) {
       console.log('📝 No user found, showing auth modal before proceeding')
       setPendingCity({ city, coordinates })
@@ -87,6 +89,7 @@ const App: FC = () => {
       return
     }
 
+    console.log('✅ Proceeding to MAP stage with:', { city, coordinates })
     setTripData((prev) => ({
       ...prev,
       city,

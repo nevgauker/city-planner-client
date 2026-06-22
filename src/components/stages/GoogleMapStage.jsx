@@ -83,6 +83,8 @@ export default function GoogleMapStage({ city, coordinates, onHomeBaseSelected, 
   const [selectedPin, setSelectedPin] = useState(null)
   const [isGeocoding, setIsGeocoding] = useState(false)
 
+  console.log('🗺️ GoogleMapStage received:', { city, coordinates, type: typeof coordinates, isArray: Array.isArray(coordinates) })
+
   const mapOptions = {
     zoom: 14,
     center: { lat: coordinates[0], lng: coordinates[1] },

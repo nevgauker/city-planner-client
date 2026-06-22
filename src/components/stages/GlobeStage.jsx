@@ -51,10 +51,8 @@ export default function GlobeStage({ onCitySelected }) {
 
     // Call callback after animation completes
     setTimeout(() => {
-      onCitySelected(city.name, {
-        lat: city.latitude,
-        lng: city.longitude,
-      })
+      console.log('🌍 Emitting city selection:', { name: city.name, lat: city.latitude, lng: city.longitude })
+      onCitySelected(city.name, [city.latitude, city.longitude])
     }, 2000)
   }
 
