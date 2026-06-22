@@ -49,7 +49,9 @@ export default function SavedTripsPanel({ onClose, onLoadTrip }) {
 
   const handleViewTrip = (trip) => {
     try {
-      console.log('📌 Loading trip from backend:', trip)
+      console.log('📌 RAW trip object from API:', trip)
+      console.log('📌 trip.homeBase from API:', trip.homeBase, 'Type:', typeof trip.homeBase)
+
       const itineraryData = typeof trip.itineraryData === 'string'
         ? JSON.parse(trip.itineraryData)
         : trip.itineraryData;
@@ -65,6 +67,7 @@ export default function SavedTripsPanel({ onClose, onLoadTrip }) {
       };
 
       console.log('📌 Constructed tripData with homeBase:', tripData.homeBase)
+      console.log('📌 tripData.homeBase.lat:', tripData.homeBase?.lat, 'tripData.homeBase.lng:', tripData.homeBase?.lng)
       onLoadTrip(tripData, itineraryData);
       onClose();
     } catch (err) {
