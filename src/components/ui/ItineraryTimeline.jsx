@@ -116,15 +116,15 @@ export default function ItineraryTimeline({
                   </div>
 
                   {/* Swap Activity Button */}
-                  <motion.button
+                  <motion.div
                     onClick={(e) => {
                       e.stopPropagation()
                       onSwapActivity?.(dayIndex, period, activity)
                     }}
-                    disabled={swappingActivity === `${dayIndex}-${period}`}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="no-print p-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50 flex-shrink-0"
+                    className="no-print p-2 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0 cursor-pointer"
+                    style={{ opacity: swappingActivity === `${dayIndex}-${period}` ? 0.5 : 1 }}
                     title="Try a different activity"
                   >
                     <RefreshCw
@@ -132,7 +132,7 @@ export default function ItineraryTimeline({
                         swappingActivity === `${dayIndex}-${period}` ? 'animate-spin' : ''
                       }`}
                     />
-                  </motion.button>
+                  </motion.div>
                 </div>
               </motion.button>
             )
