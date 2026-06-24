@@ -1,46 +1,67 @@
 import axios, { AxiosInstance } from 'axios'
 import citiesData from './cities.json'
-import type { City, WeatherData, TripRequest, ItineraryResponse } from '../types/api'
+import type { City, SearchResult, HomeBase, ItineraryDay, WeatherData, TripRequest, ItineraryResponse, ActivityBlock, User } from '../types/api'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 })
 
-// Client-side city search (instant, no API calls)
-export async function searchCities(query: string, signal?: AbortSignal): Promise<City[]> {
-  // Return empty for empty query
-  if (!query || typeof query !== 'string' || query.trim().length === 0) {
-    return []
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('city_planner_token')
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
+
+apiClient.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('city_planner_token')
+      localStorage.removeItem('city_planner_user')
+      window.dispatchEvent(new Event('auth:logout'))
+    }
+    return Promise.reject(error)
   }
+)
+
+export async function searchCities(query: string, signal?: AbortSignal): Promise<SearchResult[]> {
+  if (!query || typeof query !== 'string' || query.trim().length < 2) return []
 
   try {
-    const searchQuery = query.trim().toLowerCase()
-
-    // Filter cities by name or country (client-side, instant)
-    const results = (citiesData.cities as unknown as City[])
-      .filter((city) => {
-        const nameMatch = city.name.toLowerCase().startsWith(searchQuery)
-        const countryMatch = city.country.toLowerCase().startsWith(searchQuery)
-        return nameMatch || countryMatch
-      })
-      .slice(0, 10) // Return top 10 results
-
-    // Simulate slight delay for UX consistency
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(results), 200)
+    const response = await apiClient.get<SearchResult[]>('/api/search-cities', {
+      params: { query: query.trim() },
+      signal,
     })
+    return response.data
   } catch (error) {
-    console.error('Search error:', error)
-    throw new Error('Unable to search cities.')
+    if (axios.isCancel(error)) throw error
+    const q = query.trim().toLowerCase()
+    return (citiesData.cities as unknown as City[])
+      .filter((c) => c.name.toLowerCase().startsWith(q) || c.country.toLowerCase().startsWith(q))
+      .slice(0, 10)
+      .map((c) => ({
+        place_id: '',
+        name: c.name,
+        country: c.country,
+        description: `${c.name}, ${c.country}`,
+        latitude: c.latitude,
+        longitude: c.longitude,
+        countryCode: c.countryCode,
+      }))
   }
 }
 
-// Open-Meteo API for weather (free, no key needed)
+export async function getCityDetails(placeId: string, signal?: AbortSignal): Promise<City> {
+  const response = await apiClient.get<City>('/api/place-details', {
+    params: { placeId },
+    signal,
+  })
+  return response.data
+}
+
 export async function getWeatherForecast(
   lat: number,
   lng: number,
@@ -48,18 +69,11 @@ export async function getWeatherForecast(
   endDate: string
 ): Promise<WeatherData | null> {
   try {
-    // Validate coordinates
-    if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
-      console.warn('Invalid coordinates, using fallback weather')
-      return null
-    }
+    if (!lat || !lng || isNaN(lat) || isNaN(lng)) return null
 
-    // Ensure dates are in YYYY-MM-DD format
     const formatDate = (dateStr: string | null | undefined): string | null => {
       if (!dateStr) return null
-      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-        return dateStr
-      }
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr
       const date = new Date(dateStr)
       if (isNaN(date.getTime())) return null
       return date.toISOString().split('T')[0]
@@ -67,13 +81,7 @@ export async function getWeatherForecast(
 
     const start = formatDate(startDate)
     const end = formatDate(endDate)
-
-    if (!start || !end) {
-      console.warn('Invalid date format, using fallback weather')
-      return null
-    }
-
-    console.log(`🌤️  Fetching weather for ${lat}, ${lng} from ${start} to ${end}`)
+    if (!start || !end) return null
 
     const response = await axios.get<WeatherData>('https://api.open-meteo.com/v1/forecast', {
       params: {
@@ -86,51 +94,27 @@ export async function getWeatherForecast(
       },
       timeout: 8000,
     })
-
-    console.log('✓ Weather forecast received')
     return response.data
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    console.error('❌ Weather error:', errorMessage)
-    console.warn('Weather API unavailable, continuing without weather data')
+  } catch {
     return null
   }
 }
 
 interface GeocodingResult {
-  address: {
-    road?: string
-    city?: string
-    country?: string
-  }
+  address: { road?: string; city?: string; country?: string; town?: string }
+  display_name?: string
   lat: string
   lon: string
 }
 
-// Nominatim reverse geocoding
 export async function reverseGeocode(lat: number, lng: number): Promise<GeocodingResult> {
-  try {
-    const response = await axios.get<GeocodingResult>(
-      'https://nominatim.openstreetmap.org/reverse',
-      {
-        params: {
-          format: 'json',
-          lat,
-          lon: lng,
-        },
-        headers: {
-          'User-Agent': 'TravelPlanner/1.0',
-        },
-      }
-    )
-    return response.data
-  } catch (error) {
-    console.error('Error reverse geocoding:', error)
-    throw new Error('Failed to get address')
-  }
+  const response = await axios.get<GeocodingResult>('https://nominatim.openstreetmap.org/reverse', {
+    params: { format: 'json', lat, lon: lng },
+    headers: { 'User-Agent': 'TravelPlanner/1.0' },
+  })
+  return response.data
 }
 
-// Backend API: Generate itinerary
 export async function generateItinerary(tripData: TripRequest): Promise<ItineraryResponse> {
   try {
     const response = await apiClient.post<ItineraryResponse>('/api/generate-itinerary', {
@@ -143,36 +127,21 @@ export async function generateItinerary(tripData: TripRequest): Promise<Itinerar
     })
     return response.data
   } catch (error) {
-    const errorMessage =
+    const msg =
       axios.isAxiosError(error) && error.response?.data?.message
         ? (error.response.data.message as string)
         : 'Failed to generate itinerary'
-    console.error('Error generating itinerary:', error)
-    throw new Error(errorMessage)
+    throw new Error(msg)
   }
-}
-
-interface DayRegenerateRequest {
-  city: string
-  homeBase: {
-    lat: number
-    lng: number
-    address: string
-  }
-  dayIndex: number
-  travelStyles: string[]
-  pace: string
-  existingItinerary: any[]
 }
 
 interface DayRegenerateResponse {
   success: boolean
-  day: any
+  day: ItineraryDay
 }
 
-// Backend API: Regenerate single day
 export async function regenerateDay(
-  tripData: TripRequest,
+  tripData: TripRequest & { itinerary?: ItineraryDay[] | null },
   dayIndex: number
 ): Promise<DayRegenerateResponse> {
   try {
@@ -182,17 +151,154 @@ export async function regenerateDay(
       dayIndex,
       travelStyles: tripData.travelStyles,
       pace: tripData.pace,
-      existingItinerary: (tripData as any).itinerary,
+      existingItinerary: tripData.itinerary,
     })
     return response.data
   } catch (error) {
-    const errorMessage =
+    const msg =
       axios.isAxiosError(error) && error.response?.data?.message
         ? (error.response.data.message as string)
         : 'Failed to regenerate day'
-    console.error('Error regenerating day:', error)
-    throw new Error(errorMessage)
+    throw new Error(msg)
   }
 }
+
+interface SwapActivityResponse {
+  success: boolean
+  block: ActivityBlock
+}
+
+export async function swapActivity(
+  city: string,
+  dayIndex: number,
+  blockType: string,
+  currentActivity: ActivityBlock,
+  travelStyles: string[],
+  pace: string,
+  homeBase: HomeBase
+): Promise<SwapActivityResponse> {
+  try {
+    const response = await apiClient.post<SwapActivityResponse>('/api/swap-activity', {
+      city,
+      homeBase,
+      dayIndex,
+      blockType,
+      currentActivity,
+      travelStyles,
+      pace,
+    })
+    return response.data
+  } catch (error) {
+    const msg =
+      axios.isAxiosError(error) && error.response?.data?.message
+        ? (error.response.data.message as string)
+        : 'Failed to swap activity'
+    throw new Error(msg)
+  }
+}
+
+interface LocalTrip {
+  id: string
+  city: string
+  homeBase: HomeBase
+  startDate: string
+  endDate: string
+  travelStyles: string[]
+  pace: string
+  itinerary: ItineraryDay[]
+  savedAt: string
+}
+
+export function saveTrip(tripId: string, tripData: Partial<LocalTrip>, itinerary: ItineraryDay[]): string {
+  const trips: Record<string, LocalTrip> = JSON.parse(localStorage.getItem('savedTrips') || '{}')
+  trips[tripId] = {
+    id: tripId,
+    city: tripData.city ?? '',
+    homeBase: tripData.homeBase!,
+    startDate: tripData.startDate ?? '',
+    endDate: tripData.endDate ?? '',
+    travelStyles: tripData.travelStyles ?? [],
+    pace: tripData.pace ?? 'Balanced',
+    itinerary,
+    savedAt: new Date().toISOString(),
+  }
+  localStorage.setItem('savedTrips', JSON.stringify(trips))
+  return tripId
+}
+
+export function getSavedTrips(): LocalTrip[] {
+  const trips: Record<string, LocalTrip> = JSON.parse(localStorage.getItem('savedTrips') || '{}')
+  return Object.values(trips).sort(
+    (a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime()
+  )
+}
+
+export function getTrip(tripId: string): LocalTrip | null {
+  const trips: Record<string, LocalTrip> = JSON.parse(localStorage.getItem('savedTrips') || '{}')
+  return trips[tripId] || null
+}
+
+export function deleteTrip(tripId: string): void {
+  const trips: Record<string, LocalTrip> = JSON.parse(localStorage.getItem('savedTrips') || '{}')
+  delete trips[tripId]
+  localStorage.setItem('savedTrips', JSON.stringify(trips))
+}
+
+export function encodeTripForShare(tripData: object, itinerary: ItineraryDay[]): string {
+  return btoa(JSON.stringify({ ...tripData, itinerary }))
+}
+
+export function decodeTripFromShare(encoded: string): (object & { itinerary: ItineraryDay[] }) | null {
+  try {
+    return JSON.parse(atob(encoded))
+  } catch {
+    return null
+  }
+}
+
+interface AuthResponse {
+  token: string
+  user: { id: string; email: string; planTier: string }
+}
+
+export const loginUser = (email: string, password: string): Promise<AuthResponse> =>
+  apiClient.post<AuthResponse>('/api/auth/login', { email, password }).then((r) => r.data)
+
+export const registerUser = (email: string, password: string): Promise<AuthResponse> =>
+  apiClient.post<AuthResponse>('/api/auth/register', { email, password }).then((r) => r.data)
+
+export const fetchMe = (): Promise<User> =>
+  apiClient.get<User>('/api/auth/me').then((r) => r.data)
+
+export const saveTripToBackend = (
+  city: string,
+  title: string,
+  startDate: string,
+  endDate: string,
+  travelStyles: string[],
+  pace: string,
+  homeBase: HomeBase,
+  itineraryData: ItineraryDay[]
+): Promise<unknown> =>
+  apiClient
+    .post('/api/trips', { city, title, startDate, endDate, travelStyles, pace, homeBase, itineraryData })
+    .then((r) => r.data)
+
+export const submitFeedback = (
+  rating: number,
+  city: string,
+  comment: string,
+  wouldRecommend: boolean | null
+): Promise<unknown> =>
+  apiClient.post('/api/feedback', { rating, city, comment, wouldRecommend }).then((r) => r.data)
+
+export const submitUpgradeInterest = (reason: string): Promise<unknown> =>
+  apiClient.post('/api/feedback/upgrade-interest', { reason }).then((r) => r.data)
+
+export const listTrips = (): Promise<unknown> =>
+  apiClient.get('/api/trips').then((r) => r.data)
+
+export const deleteSavedTrip = (id: string): Promise<unknown> =>
+  apiClient.delete(`/api/trips/${id}`).then((r) => r.data)
 
 export default apiClient

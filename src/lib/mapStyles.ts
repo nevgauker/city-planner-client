@@ -1,0 +1,15 @@
+export const darkMapStyle: google.maps.MapTypeStyle[] = [
+  { elementType: 'geometry', stylers: [{ color: '#1a1f3a' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1f3a' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#9ca3af' }] },
+  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#d1d5db' }] },
+  { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#6b7280' }] },
+  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#2d3748' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2d3748' }] },
+  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#38414e' }] },
+  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#9ca3af' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#3f4651' }] },
+  { featureType: 'road.highway', elementType: 'labels.text.fill', stylers: [{ color: '#f3f4f6' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0f172a' }] },
+  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#6b7280' }] },
+]
