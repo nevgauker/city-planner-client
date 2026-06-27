@@ -80,7 +80,7 @@ export default function SavedTripsPanel({ onClose, onLoadTrip }: Props) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold">My Trips</h2>
+          <h2 className="text-2xl font-bold text-white">My Trips</h2>
           <button onClick={onClose} className="text-white/60 hover:text-white text-2xl leading-none">✕</button>
         </div>
 
@@ -105,10 +105,10 @@ export default function SavedTripsPanel({ onClose, onLoadTrip }: Props) {
                     )}
                   </div>
                   <div className="flex gap-2 ml-4">
-                    <motion.button onClick={() => handleViewTrip(trip)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="p-2 bg-accent-terracotta/30 hover:bg-accent-terracotta/50 rounded-lg text-blue-300 transition-colors">
+                    <motion.button onClick={() => handleViewTrip(trip)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="p-2 bg-accent-terracotta/30 hover:bg-accent-terracotta/50 rounded-lg text-accent-sage transition-colors">
                       <Eye className="w-5 h-5" />
                     </motion.button>
-                    <motion.button onClick={() => handleDelete(trip.id)} disabled={deleting === trip.id} whileHover={deleting !== trip.id ? { scale: 1.05 } : {}} whileTap={deleting !== trip.id ? { scale: 0.95 } : {}} className="p-2 bg-red-600/30 hover:bg-red-600/50 rounded-lg text-red-300 transition-colors disabled:opacity-50">
+                    <motion.button onClick={() => handleDelete(trip.id)} disabled={deleting === trip.id} whileHover={deleting !== trip.id ? { scale: 1.05 } : {}} whileTap={deleting !== trip.id ? { scale: 0.95 } : {}} className="p-2 bg-taupe-400/30 hover:bg-taupe-400/50 rounded-lg text-taupe-400 transition-colors disabled:opacity-50">
                       <Trash2 className="w-5 h-5" />
                     </motion.button>
                   </div>
