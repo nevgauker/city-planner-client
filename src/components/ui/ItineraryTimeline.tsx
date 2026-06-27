@@ -35,7 +35,7 @@ export default function ItineraryTimeline({
   onScrolledPastDay2,
 }: Props) {
   if (!itinerary || itinerary.length === 0) {
-    return <div className="p-6 text-white/60">No itinerary data available</div>
+    return <div className="p-6 text-neutral-dark/60">No itinerary data available</div>
   }
 
   const day2Ref = useRef<HTMLDivElement>(null)
@@ -71,16 +71,16 @@ export default function ItineraryTimeline({
 
   return (
     <div className="p-3 sm:p-6 space-y-6 sm:space-y-8">
-      <div className="sticky top-0 bg-neutral-dark z-10 pb-6 border-b border-white/10">
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">
+      <div className="sticky top-0 bg-cream-50 z-10 pb-6 border-b border-taupe-300">
+        <h2 className="text-xl sm:text-2xl font-bold text-neutral-dark mb-1">
           {tripData?.city} · {itinerary.length} days
         </h2>
-        <p className="text-white/60 text-xs sm:text-sm mb-3">
+        <p className="text-neutral-dark/60 text-xs sm:text-sm mb-3">
           {formatDate(tripData?.startDate || '')} – {formatDate(tripData?.endDate || '')}
         </p>
         {tripData?.homeBase?.address && (
-          <p className="text-white/50 text-xs sm:text-sm">
-            Starting from: <span className="text-white/70">{tripData.homeBase.address}</span>
+          <p className="text-neutral-dark/50 text-xs sm:text-sm">
+            Starting from: <span className="text-neutral-dark/70">{tripData.homeBase.address}</span>
           </p>
         )}
       </div>
@@ -96,10 +96,10 @@ export default function ItineraryTimeline({
         >
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-white">
+              <h3 className="text-base sm:text-lg font-bold text-neutral-dark">
                 Day {dayIndex + 1} — {getDayOfWeek(dayIndex)}
               </h3>
-              <div className="flex items-center gap-2 sm:gap-3 mt-2 text-xs sm:text-sm text-white/70 flex-wrap">
+              <div className="flex items-center gap-2 sm:gap-3 mt-2 text-xs sm:text-sm text-neutral-dark/70 flex-wrap">
                 <div className="flex items-center gap-1">
                   <span>{getWeatherIcon(day.weatherCode)}</span>
                   <span>{getWeatherDescription(day.weatherCode)}</span>
@@ -130,18 +130,18 @@ export default function ItineraryTimeline({
                     <div className="px-2 py-1 bg-accent-terracotta/20 rounded text-accent-terracotta text-xs font-medium">
                       {period.charAt(0).toUpperCase()}
                     </div>
-                    <div className="text-xs text-white/50 font-semibold">
+                    <div className="text-xs text-neutral-dark/50 font-semibold">
                       {String(globalActivityIndex + 1).padStart(2, '0')}
                     </div>
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-sm sm:text-base text-white mb-1">{activity.activity}</p>
-                    <p className="text-xs sm:text-sm text-white/70">{activity.place_name}</p>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-white/50 flex-wrap">
+                    <p className="font-medium text-sm sm:text-base text-neutral-dark mb-1">{activity.activity}</p>
+                    <p className="text-xs sm:text-sm text-neutral-dark/70">{activity.place_name}</p>
+                    <div className="flex items-center gap-2 mt-2 text-xs text-neutral-dark/50 flex-wrap">
                       <span className="px-2 py-1 bg-white/10 rounded">{activity.category}</span>
                       <span>⏱️ {activity.duration_minutes} min</span>
                     </div>
-                    {activity.notes && <p className="text-xs text-white/60 mt-2 italic">{activity.notes}</p>}
+                    {activity.notes && <p className="text-xs text-neutral-dark/60 mt-2 italic">{activity.notes}</p>}
                   </div>
                   <motion.div
                     onClick={(e) => { e.stopPropagation(); onSwapActivity?.(dayIndex, period, activity) }}

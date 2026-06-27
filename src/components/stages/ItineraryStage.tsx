@@ -159,17 +159,17 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
 
   if (isLoading) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-full bg-neutral-dark flex flex-col md:flex-row">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-full bg-cream-50 flex flex-col md:flex-row">
         <div className="no-print"><BackButton onClick={onBack} /></div>
 
-        <div className="w-full md:w-1/3 lg:w-2/5 h-1/2 md:h-full overflow-hidden border-r border-white/10 bg-taupe-700">
+        <div className="w-full md:w-1/3 lg:w-2/5 h-1/2 md:h-full overflow-hidden border-r border-taupe-300 bg-cream-100">
           <div className="p-6 space-y-4">
             {[1, 2, 3].map((day) => (
               <div key={day} className="space-y-3">
-                <div className="h-6 bg-white/10 rounded animate-pulse w-3/4" />
+                <div className="h-6 bg-taupe-300 rounded animate-pulse w-3/4" />
                 <div className="space-y-2">
                   {[1, 2, 3].map((item) => (
-                    <div key={item} className="h-4 bg-white/5 rounded animate-pulse" />
+                    <div key={item} className="h-4 bg-taupe-200 rounded animate-pulse" />
                   ))}
                 </div>
               </div>
@@ -178,12 +178,12 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
         </div>
 
         <div className="w-full md:w-2/3 lg:w-3/5 h-1/2 md:h-full flex items-center justify-center relative bg-neutral-dark">
-          <div className="h-full w-full bg-white/5 animate-pulse" />
+          <div className="h-full w-full bg-taupe-200 animate-pulse" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
               <div className="animate-spin h-8 w-8 border-4 border-accent-terracotta border-t-transparent rounded-full mx-auto mb-4" />
-              <p className="text-white mb-2">Building your schedule…</p>
-              <p className="text-white/60 text-sm">{statusMessage}</p>
+              <p className="text-neutral-dark mb-2">Building your schedule…</p>
+              <p className="text-neutral-dark/60 text-sm">{statusMessage}</p>
             </div>
           </div>
         </div>
@@ -192,10 +192,10 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-full bg-neutral-dark flex flex-col md:flex-row">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-full bg-cream-50 flex flex-col md:flex-row">
       <div className="no-print"><BackButton onClick={onBack} /></div>
 
-      <div className="w-full md:w-1/3 lg:w-2/5 h-1/2 md:h-full overflow-y-auto border-r border-white/10 print:border-0 print:h-auto print:w-full">
+      <div className="w-full md:w-1/3 lg:w-2/5 h-1/2 md:h-full overflow-y-auto border-r border-taupe-300 print:border-0 print:h-auto print:w-full">
         <ItineraryTimeline
           itinerary={itinerary}
           tripData={tripData}
