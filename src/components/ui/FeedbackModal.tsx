@@ -51,7 +51,7 @@ export default function FeedbackModal({ city, onClose, initialRating = 0 }: Prop
         exit={{ opacity: 0, y: 20 }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-2xl font-bold mb-2">How was your {city} itinerary?</h2>
+        <h2 className="text-2xl font-bold mb-2 text-white">How was your {city} itinerary?</h2>
         <p className="text-white/60 text-sm mb-6">Your feedback helps us improve City Planner</p>
 
         <div className="space-y-6">
