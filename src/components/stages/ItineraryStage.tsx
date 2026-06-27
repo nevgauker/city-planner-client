@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
+import { Menu, X } from 'lucide-react'
 import { generateItinerary, regenerateDay, getWeatherForecast, saveTrip, encodeTripForShare, saveTripToBackend, swapActivity } from '../../lib/api'
 import { generateICS, downloadICS } from '../../lib/utils'
 import { useAuth } from '../../contexts/AuthContext'
@@ -45,6 +46,7 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
   const [feedbackRating, setFeedbackRating] = useState(0)
   const [swappingActivity, setSwappingActivity] = useState<string | null>(null)
   const [statusMessage, setStatusMessage] = useState('Checking the weather...')
+  const [showActionMenu, setShowActionMenu] = useState(false)
 
   useEffect(() => {
     const statusMessages = [
@@ -221,10 +223,28 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
           <span className="text-xl">💬</span>
         </motion.button>
 
-        <div className="no-print absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-10 flex gap-2 flex-col sm:flex-row">
-          <button onClick={handleShareItinerary} className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-terracotta hover:bg-accent-terracotta_light text-neutral-dark rounded-lg font-medium transition-colors">🔗 Share</button>
-          <button onClick={handleCalendarExport} className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-sage hover:bg-accent-sage_light text-neutral-dark rounded-lg font-medium transition-colors">📅 Calendar</button>
-          <button onClick={() => window.print()} className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-terracotta hover:bg-accent-terracotta_light text-neutral-dark rounded-lg font-medium transition-colors">🖨️ Print</button>
+        <div className="no-print absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-10">
+          {/* Mobile Menu Toggle */}
+          <motion.button
+            onClick={() => setShowActionMenu(!showActionMenu)}
+            className="sm:hidden absolute bottom-0 right-0 p-2 bg-accent-terracotta hover:bg-accent-terracotta_light text-neutral-dark rounded-lg transition-colors"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {showActionMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </motion.button>
+
+          {/* Action Buttons - Collapsible on Mobile */}
+          <motion.div
+            className={`${showActionMenu ? 'flex' : 'hidden'} sm:flex gap-2 flex-col sm:flex-row absolute bottom-12 sm:bottom-auto sm:relative right-0 sm:right-auto bg-cream-50 sm:bg-transparent p-2 sm:p-0 rounded-lg sm:rounded-none border border-taupe-300 sm:border-none shadow-md sm:shadow-none`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={showActionMenu || window.innerWidth >= 640 ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <button onClick={handleShareItinerary} className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-terracotta hover:bg-accent-terracotta_light text-neutral-dark rounded-lg font-medium transition-colors whitespace-nowrap">🔗 Share</button>
+            <button onClick={handleCalendarExport} className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-sage hover:bg-accent-sage_light text-neutral-dark rounded-lg font-medium transition-colors whitespace-nowrap">📅 Calendar</button>
+            <button onClick={() => window.print()} className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-terracotta hover:bg-accent-terracotta_light text-neutral-dark rounded-lg font-medium transition-colors whitespace-nowrap">🖨️ Print</button>
+          </motion.div>
         </div>
       </div>
 

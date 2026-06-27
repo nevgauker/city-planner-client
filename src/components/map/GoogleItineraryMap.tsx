@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { GoogleMap, MarkerF, PolylineF } from '@react-google-maps/api'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import { getMarkerColor } from '../../lib/utils'
 import { modernCivicMapStyle } from '../../lib/mapStyles'
 import type { ItineraryDay, HomeBase } from '../../types/api'
@@ -13,6 +14,8 @@ interface Props {
 }
 
 export default function GoogleItineraryMap({ itinerary, selectedActivityIndex, homeBase, onMarkerClick, onHomeBaseClick }: Props) {
+  const [showLegend, setShowLegend] = useState(false)
+
   if (!itinerary || itinerary.length === 0 || !homeBase) {
     return <div className="w-full h-full flex items-center justify-center bg-taupe-700"><p className="text-white/60">Loading map...</p></div>
   }
@@ -63,18 +66,33 @@ export default function GoogleItineraryMap({ itinerary, selectedActivityIndex, h
       ))}
       </GoogleMap>
 
-      <div className="absolute top-24 left-4 sm:top-20 sm:right-4 sm:left-auto bg-cream-50 border border-taupe-300 rounded-lg p-4 shadow-md max-w-xs z-20">
-        <p className="text-xs font-semibold text-neutral-dark mb-2">Activity Sequence</p>
-        <div className="space-y-1 text-xs">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ffc68d' }} />
-            <span className="text-neutral-dark/70">🏠 Home Base</span>
+      <div className="absolute top-24 left-4 sm:top-20 sm:right-4 sm:left-auto bg-cream-50 border border-taupe-300 rounded-lg shadow-md max-w-xs z-20">
+        <button
+          onClick={() => setShowLegend(!showLegend)}
+          className="w-full flex items-center justify-between p-4 hover:bg-cream-100 transition-colors"
+        >
+          <p className="text-xs font-semibold text-neutral-dark">Activity Sequence</p>
+          <div className="flex md:hidden">
+            {showLegend ? (
+              <ChevronUp className="w-4 h-4 text-neutral-dark" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-neutral-dark" />
+            )}
           </div>
-          <div className="flex items-center gap-2 text-neutral-dark/70">
-            <span className="text-xs">🔢 Numbered dots = activities in order</span>
-          </div>
-          <div className="flex items-center gap-2 text-neutral-dark/70 mt-2">
-            <span className="text-xs">Click a dot to highlight it</span>
+        </button>
+
+        <div className={`overflow-hidden transition-all ${showLegend ? 'block' : 'hidden md:block'} md:block`}>
+          <div className="space-y-1 text-xs px-4 pb-4 border-t border-taupe-300 md:border-t-0 md:pb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ffc68d' }} />
+              <span className="text-neutral-dark/70">🏠 Home Base</span>
+            </div>
+            <div className="flex items-center gap-2 text-neutral-dark/70">
+              <span className="text-xs">🔢 Numbered dots = activities in order</span>
+            </div>
+            <div className="flex items-center gap-2 text-neutral-dark/70 mt-2">
+              <span className="text-xs">Click a dot to highlight it</span>
+            </div>
           </div>
         </div>
       </div>
