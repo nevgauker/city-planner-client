@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
 import { generateItinerary, regenerateDay, getWeatherForecast, saveTrip, encodeTripForShare, saveTripToBackend, swapActivity } from '../../lib/api'
@@ -34,6 +34,8 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
   const safeTrip = { ...tripData, city, homeBase, startDate, endDate } as TripRequest & { itinerary?: ItineraryDay[] | null }
   const { refreshQuota } = useAuth()
   const generatingRef = useRef(false)
+  const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const feedbackScrollRef = useRef(false)
   const [itinerary, setItinerary] = useState<ItineraryDay[] | null>(existingItinerary || null)
   const [isLoading, setIsLoading] = useState(!existingItinerary)
   const [selectedActivityIndex, setSelectedActivityIndex] = useState<number | null>(null)
@@ -42,6 +44,22 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
   const [showFeedback, setShowFeedback] = useState(false)
   const [feedbackRating, setFeedbackRating] = useState(0)
   const [swappingActivity, setSwappingActivity] = useState<string | null>(null)
+  const [statusMessage, setStatusMessage] = useState('Checking the weather...')
+
+  useEffect(() => {
+    const statusMessages = [
+      'Checking the weather...',
+      'Finding hidden gems...',
+      'Building your day-by-day plan...'
+    ]
+    let messageIndex = 0
+    const statusInterval = setInterval(() => {
+      messageIndex = (messageIndex + 1) % statusMessages.length
+      setStatusMessage(statusMessages[messageIndex])
+    }, 4000)
+
+    return () => clearInterval(statusInterval)
+  }, [])
 
   useEffect(() => {
     if (existingItinerary) { setIsLoading(false); return }
@@ -59,7 +77,12 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
         try { await saveTripToBackend(city, `${city} Trip`, startDate, endDate, tripData.travelStyles, tripData.pace, homeBase, result.itinerary) } catch { /* non-critical */ }
         toast.success('Itinerary generated & saved!')
         refreshQuota()
-        setTimeout(() => { if (!localStorage.getItem(`feedback_rated_${city}`)) setShowFeedback(true) }, 8000)
+
+        feedbackTimerRef.current = setTimeout(() => {
+          if (!localStorage.getItem(`feedback_rated_${city}`) && feedbackScrollRef.current) {
+            setShowFeedback(true)
+          }
+        }, 60000)
       } catch (error) {
         toast.error((error as Error).message || 'Failed to generate itinerary')
       } finally {
@@ -68,7 +91,23 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
       }
     }
     generate()
+
+    return () => {
+      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current)
+    }
   }, [tripData])
+
+  const handleScrolledPastDay2 = () => {
+    feedbackScrollRef.current = true
+    if (feedbackTimerRef.current) {
+      clearTimeout(feedbackTimerRef.current)
+      feedbackTimerRef.current = setTimeout(() => {
+        if (!localStorage.getItem(`feedback_rated_${city}`)) {
+          setShowFeedback(true)
+        }
+      }, 5000)
+    }
+  }
 
   const handleRegenerateDayClick = async (dayIndex: number) => {
     setIsRegenerating(true); setRegeneratingDay(dayIndex)
@@ -120,13 +159,35 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
 
   if (isLoading) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-navy-900">
-        <div className="glass-effect card-elevation px-8 py-6 rounded-lg text-center">
-          <div className="animate-spin h-8 w-8 border-4 border-warm-accent border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-white mb-2">Building your schedule…</p>
-          <p className="text-white/60 text-sm">Checking the weather and planning activities</p>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-full bg-navy-900 flex flex-col md:flex-row">
+        <div className="no-print"><BackButton onClick={onBack} /></div>
+
+        <div className="w-full md:w-1/3 lg:w-2/5 h-1/2 md:h-full overflow-hidden border-r border-white/10 bg-navy-800">
+          <div className="p-6 space-y-4">
+            {[1, 2, 3].map((day) => (
+              <div key={day} className="space-y-3">
+                <div className="h-6 bg-white/10 rounded animate-pulse w-3/4" />
+                <div className="space-y-2">
+                  {[1, 2, 3].map((item) => (
+                    <div key={item} className="h-4 bg-white/5 rounded animate-pulse" />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+
+        <div className="w-full md:w-2/3 lg:w-3/5 h-1/2 md:h-full flex items-center justify-center relative bg-navy-900">
+          <div className="h-full w-full bg-white/5 animate-pulse" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center">
+              <div className="animate-spin h-8 w-8 border-4 border-warm-accent border-t-transparent rounded-full mx-auto mb-4" />
+              <p className="text-white mb-2">Building your schedule…</p>
+              <p className="text-white/60 text-sm">{statusMessage}</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     )
   }
 
@@ -135,7 +196,18 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
       <div className="no-print"><BackButton onClick={onBack} /></div>
 
       <div className="w-full md:w-1/3 lg:w-2/5 h-1/2 md:h-full overflow-y-auto border-r border-white/10 print:border-0 print:h-auto print:w-full">
-        <ItineraryTimeline itinerary={itinerary} selectedActivityIndex={selectedActivityIndex} onActivitySelect={setSelectedActivityIndex} onRegenerateDay={handleRegenerateDayClick} isRegenerating={isRegenerating} regeneratingDay={regeneratingDay} onSwapActivity={handleSwapActivity} swappingActivity={swappingActivity} />
+        <ItineraryTimeline
+          itinerary={itinerary}
+          tripData={tripData}
+          selectedActivityIndex={selectedActivityIndex}
+          onActivitySelect={setSelectedActivityIndex}
+          onRegenerateDay={handleRegenerateDayClick}
+          isRegenerating={isRegenerating}
+          regeneratingDay={regeneratingDay}
+          onSwapActivity={handleSwapActivity}
+          swappingActivity={swappingActivity}
+          onScrolledPastDay2={handleScrolledPastDay2}
+        />
       </div>
 
       <div className="no-print w-full md:w-2/3 lg:w-3/5 h-1/2 md:h-full relative">

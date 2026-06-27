@@ -42,7 +42,6 @@ const App: FC = () => {
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showSavedTrips, setShowSavedTrips] = useState(false)
   const [pendingGeneration, setPendingGeneration] = useState(false)
-  const [pendingCity, setPendingCity] = useState<{ city: string; coordinates: [number, number] } | null>(null)
   const [existingItinerary, setExistingItinerary] = useState<ItineraryDay[] | null>(null)
   const [tripData, setTripData] = useState<TripData>({
     city: null,
@@ -78,12 +77,6 @@ const App: FC = () => {
   }, [])
 
   const handleCitySelected = (city: string, coordinates: [number, number]): void => {
-    if (!user) {
-      setPendingCity({ city, coordinates })
-      setShowAuthModal(true)
-      return
-    }
-
     setTripData((prev) => ({ ...prev, city, coordinates }))
     setCurrentStage(STAGES.MAP)
   }
@@ -128,16 +121,7 @@ const App: FC = () => {
     setShowAuthModal(false)
     refreshQuota()
 
-    if (pendingCity) {
-      const { city, coordinates } = pendingCity
-      setTripData((prev) => ({
-        ...prev,
-        city,
-        coordinates,
-      }))
-      setCurrentStage(STAGES.MAP)
-      setPendingCity(null)
-    } else if (pendingGeneration) {
+    if (pendingGeneration) {
       setPendingGeneration(false)
       setCurrentStage(STAGES.ITINERARY)
     }
@@ -175,7 +159,6 @@ const App: FC = () => {
     setShowSavedTrips(false)
     setShowAuthModal(false)
     setPendingGeneration(false)
-    setPendingCity(null)
   }
 
   return (

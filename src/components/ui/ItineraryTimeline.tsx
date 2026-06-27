@@ -1,10 +1,17 @@
 import { motion } from 'framer-motion'
+import { useRef, useEffect } from 'react'
 import { RotateCw, RefreshCw } from 'lucide-react'
 import { formatDate, getWeatherIcon, getWeatherDescription } from '../../lib/utils'
-import type { ItineraryDay, ActivityBlock } from '../../types/api'
+import type { ItineraryDay, ActivityBlock, TripRequest } from '../../types/api'
 
 interface Props {
   itinerary: ItineraryDay[] | null
+  tripData?: {
+    city?: string | null
+    homeBase?: { address?: string } | null
+    startDate?: string | null
+    endDate?: string | null
+  }
   selectedActivityIndex: number | null
   onActivitySelect: (index: number) => void
   onRegenerateDay: (dayIndex: number) => void
@@ -12,31 +19,86 @@ interface Props {
   regeneratingDay: number | null
   onSwapActivity?: (dayIndex: number, period: string, activity: ActivityBlock) => void
   swappingActivity: string | null
+  onScrolledPastDay2?: () => void
 }
 
 export default function ItineraryTimeline({
-  itinerary, selectedActivityIndex, onActivitySelect,
-  onRegenerateDay, isRegenerating, regeneratingDay,
-  onSwapActivity, swappingActivity,
+  itinerary,
+  tripData,
+  selectedActivityIndex,
+  onActivitySelect,
+  onRegenerateDay,
+  isRegenerating,
+  regeneratingDay,
+  onSwapActivity,
+  swappingActivity,
+  onScrolledPastDay2,
 }: Props) {
   if (!itinerary || itinerary.length === 0) {
     return <div className="p-6 text-white/60">No itinerary data available</div>
   }
 
+  const day2Ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!day2Ref.current || !onScrolledPastDay2) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          onScrolledPastDay2()
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.5 }
+    )
+
+    observer.observe(day2Ref.current)
+    return () => observer.disconnect()
+  }, [onScrolledPastDay2])
+
   let activityCount = 0
+  const startDate = new Date(tripData?.startDate || '')
+  const getDayDate = (index: number) => {
+    const date = new Date(startDate)
+    date.setDate(date.getDate() + index)
+    return date
+  }
+
+  const getDayOfWeek = (index: number) => {
+    return getDayDate(index).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
+  }
 
   return (
     <div className="p-3 sm:p-6 space-y-6 sm:space-y-8">
-      <div className="sticky top-0 bg-navy-900 z-10 pb-4">
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">Your Itinerary</h2>
-        <p className="text-white/60 text-xs sm:text-sm">{itinerary.length} days of adventure</p>
+      <div className="sticky top-0 bg-navy-900 z-10 pb-6 border-b border-white/10">
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">
+          {tripData?.city} · {itinerary.length} days
+        </h2>
+        <p className="text-white/60 text-xs sm:text-sm mb-3">
+          {formatDate(tripData?.startDate || '')} – {formatDate(tripData?.endDate || '')}
+        </p>
+        {tripData?.homeBase?.address && (
+          <p className="text-white/50 text-xs sm:text-sm">
+            Starting from: <span className="text-white/70">{tripData.homeBase.address}</span>
+          </p>
+        )}
       </div>
 
       {itinerary.map((day, dayIndex) => (
-        <motion.div key={dayIndex} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: dayIndex * 0.1 }} className="space-y-4">
+        <motion.div
+          key={dayIndex}
+          ref={dayIndex === 1 ? day2Ref : undefined}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: dayIndex * 0.1 }}
+          className="space-y-4"
+        >
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-white">Day {dayIndex + 1} {formatDate(day.date)}</h3>
+              <h3 className="text-base sm:text-lg font-bold text-white">
+                Day {dayIndex + 1} — {getDayOfWeek(dayIndex)}
+              </h3>
               <div className="flex items-center gap-2 sm:gap-3 mt-2 text-xs sm:text-sm text-white/70 flex-wrap">
                 <div className="flex items-center gap-1">
                   <span>{getWeatherIcon(day.weatherCode)}</span>
@@ -64,8 +126,13 @@ export default function ItineraryTimeline({
                 className={`w-full text-left p-3 sm:p-4 rounded-lg transition-all ${isSelected ? 'bg-warm-accent/20 border border-warm-accent' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}
               >
                 <div className="flex items-start gap-2 sm:gap-3">
-                  <div className="px-2 py-1 bg-warm-accent/20 rounded text-warm-accent text-xs font-medium flex-shrink-0">
-                    {period.charAt(0).toUpperCase()}
+                  <div className="flex flex-col items-center gap-1 flex-shrink-0">
+                    <div className="px-2 py-1 bg-warm-accent/20 rounded text-warm-accent text-xs font-medium">
+                      {period.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="text-xs text-white/50 font-semibold">
+                      {String(globalActivityIndex + 1).padStart(2, '0')}
+                    </div>
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-sm sm:text-base text-white mb-1">{activity.activity}</p>

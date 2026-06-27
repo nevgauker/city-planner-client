@@ -41,6 +41,7 @@ export default function QuotaBar({ onSignInClick, onViewTrips, onLogout }: Props
 
   const remaining = quota ? quota.monthlyGenerationsLimit - quota.monthlyGenerations : 10
   const limit = quota?.monthlyGenerationsLimit ?? 10
+  const daysUntilReset = quota?.daysUntilReset ?? 30
   const isLow = remaining <= 2
   const isExhausted = remaining <= 0
 
@@ -70,26 +71,18 @@ export default function QuotaBar({ onSignInClick, onViewTrips, onLogout }: Props
             className={`glass-effect card-elevation rounded-full px-4 py-2 text-sm font-semibold transition-all ${
               hasNotified ? 'text-green-400 cursor-default' : 'text-warm-accent hover:bg-white/10 cursor-pointer'
             }`}
+            title={`Resets in ${daysUntilReset} ${daysUntilReset === 1 ? 'day' : 'days'}`}
           >
-            {hasNotified ? "✓ You're on the list" : 'Notify me when Pro launches →'}
+            {hasNotified ? "✓ You're on the list" : `Resets in ${daysUntilReset}d`}
           </motion.button>
         ) : (
-          <div className="glass-effect card-elevation rounded-full px-4 py-2 flex items-center gap-3">
-            <div className="flex gap-1">
-              {[...Array(limit)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className={`w-2 h-2 rounded-full ${
-                    i < remaining ? (isLow ? 'bg-amber-400' : 'bg-warm-accent') : 'bg-white/20'
-                  }`}
-                  animate={isLow && i < remaining ? { opacity: [1, 0.5, 1] } : { opacity: 1 }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                />
-              ))}
-            </div>
+          <div className="glass-effect card-elevation rounded-full px-4 py-2 group cursor-help">
             <span className={`text-sm font-semibold ${isLow ? 'text-amber-400' : 'text-warm-accent'}`}>
-              {remaining} left
+              {remaining} of {limit} itineraries left
             </span>
+            <div className="hidden group-hover:block absolute top-full mt-2 right-0 bg-black/90 text-white text-xs rounded px-3 py-2 whitespace-nowrap z-50 border border-white/20">
+              Each itinerary generation uses 1 credit. Credits reset every 30 days.
+            </div>
           </div>
         )}
 
