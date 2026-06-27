@@ -29,7 +29,7 @@ export default function QuotaBar({ onSignInClick, onViewTrips, onLogout }: Props
       >
         <motion.button
           onClick={onSignInClick}
-          className="px-6 py-2 bg-warm-accent hover:bg-warm-light text-navy-900 font-bold rounded-full transition-colors"
+          className="btn-primary"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -68,32 +68,32 @@ export default function QuotaBar({ onSignInClick, onViewTrips, onLogout }: Props
             disabled={hasNotified}
             whileHover={!hasNotified ? { scale: 1.05 } : {}}
             whileTap={!hasNotified ? { scale: 0.95 } : {}}
-            className={`glass-effect card-elevation rounded-full px-4 py-2 text-sm font-semibold transition-all ${
-              hasNotified ? 'text-green-400 cursor-default' : 'text-warm-accent hover:bg-white/10 cursor-pointer'
+            className={`glass-effect rounded-full px-4 py-2 text-sm font-semibold transition-all ${
+              hasNotified ? 'text-accent-sage cursor-default' : 'text-accent-terracotta hover:bg-cream-200 cursor-pointer'
             }`}
             title={`Resets in ${daysUntilReset} ${daysUntilReset === 1 ? 'day' : 'days'}`}
           >
-            {hasNotified ? "✓ You're on the list" : `Resets in ${daysUntilReset}d`}
+            {hasNotified ? "✓ On the list" : `Resets in ${daysUntilReset}d`}
           </motion.button>
         ) : (
-          <div className="glass-effect card-elevation rounded-full px-4 py-2 group cursor-help">
-            <span className={`text-sm font-semibold ${isLow ? 'text-amber-400' : 'text-warm-accent'}`}>
-              {remaining} of {limit} itineraries left
+          <div className="glass-effect rounded-full px-4 py-2 group cursor-help">
+            <span className={`text-sm font-semibold ${isLow ? 'text-accent-terracotta' : 'text-accent-sage'}`}>
+              {remaining} of {limit} left
             </span>
-            <div className="hidden group-hover:block absolute top-full mt-2 right-0 bg-black/90 text-white text-xs rounded px-3 py-2 whitespace-nowrap z-50 border border-white/20">
-              Each itinerary generation uses 1 credit. Credits reset every 30 days.
+            <div className="hidden group-hover:block absolute top-full mt-2 right-0 bg-neutral-dark text-cream-50 text-xs rounded px-3 py-2 whitespace-nowrap z-50 border border-taupe-300">
+              Generation uses 1 credit. Resets every 30 days.
             </div>
           </div>
         )}
 
         <motion.button
           onClick={() => setShowMenu(!showMenu)}
-          className="glass-effect card-elevation rounded-full px-4 py-2 flex items-center gap-2 hover:bg-white/20 transition-all"
+          className="glass-effect rounded-full px-4 py-2 flex items-center gap-2 hover:bg-cream-200 transition-all"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <span className="text-sm text-white/80 truncate max-w-[120px]">{user.email}</span>
-          <ChevronDown className={`w-4 h-4 text-white/60 transition-transform ${showMenu ? 'rotate-180' : ''}`} />
+          <span className="text-sm font-medium text-neutral-dark truncate max-w-[120px]">{user.email}</span>
+          <ChevronDown className={`w-4 h-4 text-neutral-light transition-transform ${showMenu ? 'rotate-180' : ''}`} />
         </motion.button>
       </div>
 
