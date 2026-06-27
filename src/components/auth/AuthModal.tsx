@@ -115,7 +115,6 @@ export default function AuthModal({ onSuccess, onClose }: Props) {
                 onSuccess={handleGoogleSuccess}
                 onError={() => setLocalError('Google sign-in failed')}
                 text={tab === 'signin' ? 'signin_with' : 'signup_with'}
-                theme="light"
               />
             </div>
             <div className="relative mb-6">
