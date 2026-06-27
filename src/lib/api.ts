@@ -267,6 +267,9 @@ export const loginUser = (email: string, password: string): Promise<AuthResponse
 export const registerUser = (email: string, password: string): Promise<AuthResponse> =>
   apiClient.post<AuthResponse>('/api/auth/register', { email, password }).then((r) => r.data)
 
+export const googleAuth = (googleToken: string): Promise<AuthResponse> =>
+  apiClient.post<AuthResponse>('/api/auth/google', { token: googleToken }).then((r) => r.data)
+
 export const fetchMe = (): Promise<User> =>
   apiClient.get<User>('/api/auth/me').then((r) => r.data)
 

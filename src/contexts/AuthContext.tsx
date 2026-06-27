@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { loginUser, registerUser, fetchMe } from '../lib/api'
+import { loginUser, registerUser, fetchMe, googleAuth } from '../lib/api'
 import type { User, Quota } from '../types/api'
 
 interface AuthResult {
@@ -15,6 +15,7 @@ interface AuthContextValue {
   error: string | null
   login: (email: string, password: string) => Promise<AuthResult>
   register: (email: string, password: string) => Promise<AuthResult>
+  loginWithGoogle: (googleToken: string) => Promise<AuthResult>
   logout: () => void
   refreshQuota: () => Promise<void>
 }
@@ -92,6 +93,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const loginWithGoogle = async (googleToken: string): Promise<AuthResult> => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await googleAuth(googleToken)
+      const { token: newToken, user: newUser } = response
+      localStorage.setItem('city_planner_token', newToken)
+      localStorage.setItem('city_planner_user', JSON.stringify(newUser))
+      setToken(newToken)
+      setUser(newUser as unknown as User)
+      await refreshQuota()
+      return { success: true }
+    } catch (err) {
+      const errorMsg = (err as { response?: { data?: { error?: string } } }).response?.data?.error || 'Google sign-in failed'
+      setError(errorMsg)
+      return { success: false, error: errorMsg }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const logout = () => {
     localStorage.removeItem('city_planner_token')
     localStorage.removeItem('city_planner_user')
@@ -112,7 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, token, quota, loading, error, login, register, logout, refreshQuota }}>
+    <AuthContext.Provider value={{ user, token, quota, loading, error, login, register, loginWithGoogle, logout, refreshQuota }}>
       {children}
     </AuthContext.Provider>
   )
