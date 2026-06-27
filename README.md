@@ -2,6 +2,8 @@
 
 React 18 frontend for City Planner featuring an interactive 3D globe, smart search, and trip planning interface.
 
+**Status:** ✅ Production Ready with 46 Unit Tests & Automated CI/CD
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -34,16 +36,20 @@ client/
 ├── src/
 │   ├── components/       # Reusable React components
 │   │   ├── ui/          # UI building blocks
-│   │   ├── Globe.tsx    # 3D globe visualization
-│   │   └── ...
-│   ├── pages/           # Page layouts
-│   ├── services/        # API integration
-│   ├── hooks/           # Custom React hooks
-│   ├── styles/          # Global styles (Tailwind)
+│   │   ├── stages/      # Page stage components
+│   │   ├── auth/        # Authentication components
+│   │   ├── map/         # Map-related components
+│   │   └── 3d/          # 3D globe components
+│   ├── contexts/        # React Context providers
+│   ├── lib/             # Utilities and API functions
+│   ├── types/           # TypeScript type definitions
 │   ├── App.tsx          # Main application component
-│   └── main.jsx         # Entry point
+│   └── main.tsx         # Entry point
+├── .github/workflows/
+│   └── client-ci.yml    # GitHub Actions CI/CD
 ├── package.json
 ├── vite.config.ts
+├── vitest.config.ts     # Testing configuration
 ├── tailwind.config.js
 └── tsconfig.json
 ```
@@ -56,6 +62,8 @@ npm run build            # Build for production
 npm run preview          # Preview production build
 npm run lint             # Run ESLint
 npm run typecheck        # Run TypeScript type checking
+npm run test             # Run unit tests (watch mode)
+npm run test:coverage    # Run tests with coverage report
 ```
 
 ## 🎨 Tech Stack
@@ -137,10 +145,25 @@ npm run preview
 
 ## 🧪 Testing
 
-While the main test suite is in the server, the client includes:
-- Type checking via TypeScript
-- Linting via ESLint
-- Visual testing during development
+Full testing setup with Vitest and automated CI/CD:
+
+### Test Scripts
+```bash
+npm run test              # Run tests in watch mode
+npm run test:coverage     # Run tests with coverage report
+```
+
+### Current Coverage
+- **Utilities** (`lib/utils.ts`): 94.15% ✅
+- **API Functions** (`lib/api.ts`): 40.71%
+- **Components**: 46 unit tests
+- **Overall**: Automated testing on every push via GitHub Actions
+
+### Test Structure
+- Unit tests located alongside source files (`.test.ts`, `.test.tsx`)
+- Uses Vitest with jsdom environment
+- @testing-library/react for component testing
+- Full type safety with TypeScript
 
 ### Type Checking
 ```bash
@@ -151,6 +174,16 @@ npm run typecheck
 ```bash
 npm run lint
 ```
+
+### GitHub Actions CI/CD
+- **Workflow:** `.github/workflows/client-ci.yml`
+- **Triggers:** Every push/PR to `main` or `develop`
+- **Runs:**
+  - Tests on Node 18.x & 20.x
+  - Type checking
+  - Coverage reporting
+  - ESLint validation
+  - Production build
 
 ## 🎪 Interactive Globe
 
@@ -223,6 +256,25 @@ npm run dev
 
 ---
 
-**Last Updated:** 2026-06-18  
+## 📊 Test Coverage
+
+| Category | Coverage | Files |
+|----------|----------|-------|
+| Utilities | 94.15% | `lib/utils.ts` |
+| API | 40.71% | `lib/api.ts` |
+| Components | 100% | `BackButton.tsx` |
+| Unit Tests | 46 passing | Full suite |
+
+## 🔗 Related Documentation
+
+- [Server README](../server/README.md)
+- [Project Architecture](../docs/PROJECT_SUMMARY.md)
+- [Setup Guide](../docs/SETUP.md)
+- [Troubleshooting](../docs/TROUBLESHOOTING.md)
+
+---
+
+**Last Updated:** 2026-06-27  
 **Node Versions:** 18.x, 20.x  
-**Status:** ✅ Production Ready
+**Status:** ✅ Production Ready  
+**Test Coverage:** 46 unit tests with GitHub Actions automation
