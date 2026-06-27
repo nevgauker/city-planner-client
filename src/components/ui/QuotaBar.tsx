@@ -77,7 +77,7 @@ export default function QuotaBar({ onSignInClick, onViewTrips, onLogout }: Props
           </motion.button>
         ) : (
           <div className="glass-effect rounded-full px-4 py-2 group cursor-help">
-            <span className={`text-sm font-semibold ${isLow ? 'text-accent-terracotta' : 'text-accent-sage'}`}>
+            <span className="text-sm font-semibold text-neutral-dark">
               {remaining} of {limit} left
             </span>
             <div className="hidden group-hover:block absolute top-full mt-2 right-0 bg-neutral-dark text-cream-50 text-xs rounded px-3 py-2 whitespace-nowrap z-50 border border-taupe-300">
