@@ -51,34 +51,34 @@ export default function FeedbackModal({ city, onClose, initialRating = 0 }: Prop
         exit={{ opacity: 0, y: 20 }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-2xl font-bold mb-2 text-white">How was your {city} itinerary?</h2>
-        <p className="text-white/60 text-sm mb-6">Your feedback helps us improve City Planner</p>
+        <h2 className="text-2xl font-bold mb-2 text-neutral-dark">How was your {city} itinerary?</h2>
+        <p className="text-neutral-dark/60 text-sm mb-6">Your feedback helps us improve City Planner</p>
 
         <div className="space-y-6">
           <div>
-            <p className="text-white/80 text-sm mb-3">Rate your experience</p>
+            <p className="text-neutral-dark/80 text-sm mb-3">Rate your experience</p>
             <div className="flex gap-4 justify-center">
               {[1, 2, 3, 4, 5].map((star) => (
                 <motion.button key={star} onClick={() => setRating(star)} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.95 }}>
-                  <Star className={`w-8 h-8 transition-colors ${star <= rating ? 'fill-accent-terracotta text-accent-terracotta' : 'text-white/30'}`} />
+                  <Star className={`w-8 h-8 transition-colors ${star <= rating ? 'fill-accent-terracotta text-accent-terracotta' : 'text-taupe-400'}`} />
                 </motion.button>
               ))}
             </div>
           </div>
 
           <div>
-            <label className="block text-white/80 text-sm mb-2">What did you love or want to improve? (optional)</label>
+            <label className="block text-neutral-dark/80 text-sm mb-2">What did you love or want to improve? (optional)</label>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value.slice(0, 500))}
               placeholder="Tell us what you think..."
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-accent-terracotta focus:ring-2 focus:ring-accent-terracotta/30 transition-all resize-none h-24"
+              className="w-full p-3 bg-cream-50 border border-taupe-300 rounded-lg text-neutral-dark placeholder-neutral-dark/40 focus:outline-none focus:border-accent-terracotta focus:ring-2 focus:ring-accent-terracotta/30 transition-all resize-none h-24"
             />
-            <p className="text-white/40 text-xs mt-1">{comment.length}/500 characters</p>
+            <p className="text-neutral-dark/40 text-xs mt-1">{comment.length}/500 characters</p>
           </div>
 
           <div>
-            <p className="text-white/80 text-sm mb-3">Would you recommend City Planner to a friend?</p>
+            <p className="text-neutral-dark/80 text-sm mb-3">Would you recommend City Planner to a friend?</p>
             <div className="flex gap-3">
               {([true, false] as const).map((val) => (
                 <motion.button
@@ -86,8 +86,8 @@ export default function FeedbackModal({ city, onClose, initialRating = 0 }: Prop
                   onClick={() => setWouldRecommend(wouldRecommend === val ? null : val)}
                   className={`flex-1 py-2 px-3 rounded-lg font-medium transition-all ${
                     wouldRecommend === val
-                      ? val ? 'bg-green-900/50 border border-green-500/50 text-green-300' : 'bg-red-900/50 border border-red-500/50 text-red-300'
-                      : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
+                      ? val ? 'bg-accent-sage/20 border border-accent-sage/50 text-accent-sage' : 'bg-taupe-300/20 border border-taupe-300/50 text-taupe-600'
+                      : 'bg-taupe-200 border border-taupe-300 text-neutral-dark hover:bg-taupe-300'
                   }`}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -99,7 +99,7 @@ export default function FeedbackModal({ city, onClose, initialRating = 0 }: Prop
           </div>
 
           <div className="flex gap-3 pt-4">
-            <motion.button onClick={handleDismiss} className="flex-1 py-3 px-4 border border-white/20 bg-white/10 hover:bg-white/20 text-white rounded-lg font-medium transition-colors" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <motion.button onClick={handleDismiss} className="flex-1 py-3 px-4 border border-taupe-300 bg-taupe-200 hover:bg-taupe-300 text-neutral-dark rounded-lg font-medium transition-colors" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               Not now
             </motion.button>
             <motion.button
