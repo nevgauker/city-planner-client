@@ -27,7 +27,7 @@ describe('BackButton', () => {
     const { container } = render(<BackButton onClick={onClick} />)
 
     const button = container.querySelector('button')
-    expect(button?.className).toContain('glass-effect')
-    expect(button?.className).toContain('card-elevation')
+    expect(button?.className).toContain('bg-cream-100')
+    expect(button?.className).toContain('border-taupe-300')
   })
 })

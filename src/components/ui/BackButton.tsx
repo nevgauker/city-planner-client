@@ -13,9 +13,9 @@ export default function BackButton({ onClick }: Props) {
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
       onClick={onClick}
-      className="absolute top-4 left-4 z-20 p-2 glass-effect card-elevation rounded-lg hover:bg-white/20 transition-colors"
+      className="absolute top-4 left-4 z-20 p-2 bg-cream-100 border border-taupe-300 rounded-lg hover:bg-cream-200 transition-colors shadow-sm"
     >
-      <ChevronLeft className="w-6 h-6 text-white" />
+      <ChevronLeft className="w-6 h-6 text-neutral-dark" />
     </motion.button>
   )
 }
