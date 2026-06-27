@@ -9,9 +9,10 @@ interface Props {
   onSelectCity: (city: SearchResult) => void
   isLoading: boolean
   error: string | null
+  dropUp?: boolean
 }
 
-export default function CitySearch({ onSearch, results, onSelectCity, isLoading, error }: Props) {
+export default function CitySearch({ onSearch, results, onSelectCity, isLoading, error, dropUp = false }: Props) {
   const [query, setQuery] = useState('')
 
   useEffect(() => {
@@ -31,12 +32,12 @@ export default function CitySearch({ onSearch, results, onSelectCity, isLoading,
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search for a city..."
-          className="w-full px-4 py-3 pl-10 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-warm-accent focus:ring-2 focus:ring-warm-accent/30 transition-all"
+          className="input-field pl-10"
         />
-        <Search className="absolute left-3 top-3.5 w-5 h-5 text-white/50" />
+        <Search className="absolute left-3 top-3.5 w-5 h-5 text-accent-terracotta" />
         {isLoading && (
           <div className="absolute right-3 top-3.5">
-            <div className="animate-spin h-5 w-5 border-2 border-warm-accent border-t-transparent rounded-full" />
+            <div className="animate-spin h-5 w-5 border-2 border-accent-terracotta border-t-transparent rounded-full" />
           </div>
         )}
       </div>
@@ -46,7 +47,7 @@ export default function CitySearch({ onSearch, results, onSelectCity, isLoading,
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="absolute top-full mt-2 w-full bg-red-900/30 border border-red-500/50 rounded-lg p-3 text-red-200 text-sm z-20"
+          className="absolute top-full mt-2 w-full bg-red-100 border border-red-400 rounded-lg p-3 text-red-700 text-sm z-20"
         >
           {error}
         </motion.div>
@@ -57,7 +58,7 @@ export default function CitySearch({ onSearch, results, onSelectCity, isLoading,
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="absolute top-full mt-2 w-full bg-navy-800 border border-white/20 rounded-lg overflow-hidden card-elevation z-20"
+          className={`absolute ${dropUp ? 'bottom-full mb-2' : 'top-full mt-2'} w-full bg-cream-100 border border-taupe-300 rounded-lg overflow-hidden card-elevation z-20`}
         >
           {results.map((city, index) => (
             <motion.button
@@ -66,10 +67,10 @@ export default function CitySearch({ onSearch, results, onSelectCity, isLoading,
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
               onClick={() => handleSelectCity(city)}
-              className="w-full px-4 py-3 text-left hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0 text-white"
+              className="w-full px-4 py-3 text-left hover:bg-cream-200 transition-colors border-b border-taupe-200 last:border-b-0 text-neutral-dark"
             >
               <div className="font-medium">{city.name}</div>
-              <div className="text-xs text-white/50">{city.country}</div>
+              <div className="text-xs text-neutral-light">{city.country}</div>
             </motion.button>
           ))}
         </motion.div>

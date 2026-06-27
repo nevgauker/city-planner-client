@@ -1,7 +1,7 @@
 import { useState, useEffect, FC } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import GlobeStage from './components/stages/GlobeStage'
+import MapHeroStage from './components/stages/MapHeroStage'
 import GoogleMapStage from './components/stages/GoogleMapStage'
 import TripDetailsStage from './components/stages/TripDetailsStage'
 import ItineraryStage from './components/stages/ItineraryStage'
@@ -163,9 +163,9 @@ const App: FC = () => {
 
   return (
     <GoogleMapProvider>
-      <div className="w-full h-screen bg-navy-900 overflow-hidden">
+      <div className="w-full h-screen bg-cream-50 overflow-hidden">
         {currentStage === STAGES.GLOBE && (
-          <GlobeStage onCitySelected={handleCitySelected} />
+          <MapHeroStage onCitySelected={handleCitySelected} />
         )}
 
         {currentStage === STAGES.MAP && (
