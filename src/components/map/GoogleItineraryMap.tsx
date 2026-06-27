@@ -63,7 +63,7 @@ export default function GoogleItineraryMap({ itinerary, selectedActivityIndex, h
       ))}
       </GoogleMap>
 
-      <div className="absolute top-4 left-4 sm:top-4 sm:right-4 sm:left-auto bg-cream-50 border border-taupe-300 rounded-lg p-4 shadow-md max-w-xs z-20">
+      <div className="absolute top-24 left-4 sm:top-20 sm:right-4 sm:left-auto bg-cream-50 border border-taupe-300 rounded-lg p-4 shadow-md max-w-xs z-20">
         <p className="text-xs font-semibold text-neutral-dark mb-2">Activity Sequence</p>
         <div className="space-y-1 text-xs">
           <div className="flex items-center gap-2">
