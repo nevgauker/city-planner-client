@@ -98,7 +98,7 @@ export default function GlobeStage({ onCitySelected }: Props) {
       {!isMobile && <GlobeCanvas ref={globeRef} />}
 
       {isMobile && (
-        <div className="absolute inset-0 bg-gradient-to-b from-warm-accent/5 to-navy-900 via-navy-800" />
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-terracotta/5 to-neutral-dark via-taupe-700" />
       )}
 
       <div className="absolute top-4 left-4 z-10">
@@ -162,7 +162,7 @@ export default function GlobeStage({ onCitySelected }: Props) {
       {selectedCity && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 flex items-center justify-center bg-black/30">
           <div className="glass-effect card-elevation px-8 py-6 rounded-lg">
-            <div className="animate-spin h-8 w-8 border-4 border-warm-accent border-t-transparent rounded-full mx-auto mb-4" />
+            <div className="animate-spin h-8 w-8 border-4 border-accent-terracotta border-t-transparent rounded-full mx-auto mb-4" />
             <p className="text-white text-center">Preparing your map...</p>
           </div>
         </motion.div>

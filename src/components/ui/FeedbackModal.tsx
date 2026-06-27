@@ -60,7 +60,7 @@ export default function FeedbackModal({ city, onClose, initialRating = 0 }: Prop
             <div className="flex gap-4 justify-center">
               {[1, 2, 3, 4, 5].map((star) => (
                 <motion.button key={star} onClick={() => setRating(star)} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.95 }}>
-                  <Star className={`w-8 h-8 transition-colors ${star <= rating ? 'fill-warm-accent text-warm-accent' : 'text-white/30'}`} />
+                  <Star className={`w-8 h-8 transition-colors ${star <= rating ? 'fill-accent-terracotta text-accent-terracotta' : 'text-white/30'}`} />
                 </motion.button>
               ))}
             </div>
@@ -72,7 +72,7 @@ export default function FeedbackModal({ city, onClose, initialRating = 0 }: Prop
               value={comment}
               onChange={(e) => setComment(e.target.value.slice(0, 500))}
               placeholder="Tell us what you think..."
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-warm-accent focus:ring-2 focus:ring-warm-accent/30 transition-all resize-none h-24"
+              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-accent-terracotta focus:ring-2 focus:ring-accent-terracotta/30 transition-all resize-none h-24"
             />
             <p className="text-white/40 text-xs mt-1">{comment.length}/500 characters</p>
           </div>
@@ -105,7 +105,7 @@ export default function FeedbackModal({ city, onClose, initialRating = 0 }: Prop
             <motion.button
               onClick={handleSubmit}
               disabled={!rating || loading}
-              className="flex-1 py-3 px-4 bg-warm-accent hover:bg-warm-light text-navy-900 rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 py-3 px-4 bg-accent-terracotta hover:bg-accent-terracotta_light text-neutral-dark rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               whileHover={rating && !loading ? { scale: 1.02 } : {}}
               whileTap={rating && !loading ? { scale: 0.98 } : {}}
             >

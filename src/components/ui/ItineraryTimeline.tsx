@@ -71,7 +71,7 @@ export default function ItineraryTimeline({
 
   return (
     <div className="p-3 sm:p-6 space-y-6 sm:space-y-8">
-      <div className="sticky top-0 bg-navy-900 z-10 pb-6 border-b border-white/10">
+      <div className="sticky top-0 bg-neutral-dark z-10 pb-6 border-b border-white/10">
         <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">
           {tripData?.city} · {itinerary.length} days
         </h2>
@@ -103,12 +103,12 @@ export default function ItineraryTimeline({
                 <div className="flex items-center gap-1">
                   <span>{getWeatherIcon(day.weatherCode)}</span>
                   <span>{getWeatherDescription(day.weatherCode)}</span>
-                  <span className="text-warm-accent font-medium">{day.temperature}°C</span>
+                  <span className="text-accent-terracotta font-medium">{day.temperature}°C</span>
                 </div>
               </div>
             </div>
             <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} onClick={() => onRegenerateDay(dayIndex)} disabled={isRegenerating && regeneratingDay === dayIndex} className="no-print p-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50">
-              <RotateCw className={`w-5 h-5 text-warm-accent ${isRegenerating && regeneratingDay === dayIndex ? 'animate-spin' : ''}`} />
+              <RotateCw className={`w-5 h-5 text-accent-terracotta ${isRegenerating && regeneratingDay === dayIndex ? 'animate-spin' : ''}`} />
             </motion.button>
           </div>
 
@@ -123,11 +123,11 @@ export default function ItineraryTimeline({
                 key={`${dayIndex}-${period}`}
                 onClick={() => onActivitySelect(globalActivityIndex)}
                 whileHover={{ scale: 1.02 }}
-                className={`w-full text-left p-3 sm:p-4 rounded-lg transition-all ${isSelected ? 'bg-warm-accent/20 border border-warm-accent' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}
+                className={`w-full text-left p-3 sm:p-4 rounded-lg transition-all ${isSelected ? 'bg-accent-terracotta/20 border border-accent-terracotta' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}
               >
                 <div className="flex items-start gap-2 sm:gap-3">
                   <div className="flex flex-col items-center gap-1 flex-shrink-0">
-                    <div className="px-2 py-1 bg-warm-accent/20 rounded text-warm-accent text-xs font-medium">
+                    <div className="px-2 py-1 bg-accent-terracotta/20 rounded text-accent-terracotta text-xs font-medium">
                       {period.charAt(0).toUpperCase()}
                     </div>
                     <div className="text-xs text-white/50 font-semibold">
@@ -149,7 +149,7 @@ export default function ItineraryTimeline({
                     className="no-print p-2 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0 cursor-pointer"
                     style={{ opacity: swappingActivity === `${dayIndex}-${period}` ? 0.5 : 1 }}
                   >
-                    <RefreshCw className={`w-4 h-4 text-warm-accent ${swappingActivity === `${dayIndex}-${period}` ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={`w-4 h-4 text-accent-terracotta ${swappingActivity === `${dayIndex}-${period}` ? 'animate-spin' : ''}`} />
                   </motion.div>
                 </div>
               </motion.button>

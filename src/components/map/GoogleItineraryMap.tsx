@@ -12,7 +12,7 @@ interface Props {
 
 export default function GoogleItineraryMap({ itinerary, selectedActivityIndex, homeBase }: Props) {
   if (!itinerary || itinerary.length === 0 || !homeBase) {
-    return <div className="w-full h-full flex items-center justify-center bg-navy-800"><p className="text-white/60">Loading map...</p></div>
+    return <div className="w-full h-full flex items-center justify-center bg-taupe-700"><p className="text-white/60">Loading map...</p></div>
   }
 
   const toNum = (val: unknown): number => { const n = Number(val); return isFinite(n) ? n : 0 }

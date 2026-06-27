@@ -39,7 +39,7 @@ export default function GoogleMapStage({ city, coordinates, onHomeBaseSelected, 
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-full bg-navy-900" style={{ height: '100vh' }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-full bg-neutral-dark" style={{ height: '100vh' }}>
       <BackButton onClick={onBack} />
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: 'calc(100vh - 20px)', position: 'absolute', top: 0, left: 0 }}

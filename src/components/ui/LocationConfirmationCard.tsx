@@ -19,7 +19,7 @@ export default function LocationConfirmationCard({ address, city, isLoading, onC
     >
       <div className="glass-effect card-elevation rounded-lg p-6">
         <div className="flex items-start gap-4">
-          <MapPin className="w-5 h-5 text-warm-accent flex-shrink-0 mt-1" />
+          <MapPin className="w-5 h-5 text-accent-terracotta flex-shrink-0 mt-1" />
           <div className="flex-1">
             <h3 className="text-white font-medium mb-1">Home base location</h3>
             <p className="text-white/70 text-sm mb-4">{address}</p>
@@ -38,10 +38,10 @@ export default function LocationConfirmationCard({ address, city, isLoading, onC
           <button
             onClick={onConfirm}
             disabled={isLoading}
-            className="flex-1 px-4 py-2 bg-warm-accent hover:bg-warm-light text-navy-900 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2 bg-accent-terracotta hover:bg-accent-terracotta_light text-neutral-dark rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {isLoading ? (
-              <div className="animate-spin h-4 w-4 border-2 border-navy-900 border-t-transparent rounded-full" />
+              <div className="animate-spin h-4 w-4 border-2 border-neutral-dark border-t-transparent rounded-full" />
             ) : (
               <>
                 <Check className="w-4 h-4" />
