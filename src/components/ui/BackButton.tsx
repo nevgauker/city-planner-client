@@ -1,7 +1,11 @@
 import { motion } from 'framer-motion'
 import { ChevronLeft } from 'lucide-react'
 
-export default function BackButton({ onClick }) {
+interface Props {
+  onClick: () => void
+}
+
+export default function BackButton({ onClick }: Props) {
   return (
     <motion.button
       initial={{ opacity: 0, x: -20 }}

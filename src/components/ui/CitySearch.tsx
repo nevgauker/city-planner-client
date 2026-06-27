@@ -1,38 +1,39 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Search } from 'lucide-react'
+import type { SearchResult } from '../../types/api'
 
-export default function CitySearch({ onSearch, results, onSelectCity, isLoading, error }) {
+interface Props {
+  onSearch: (query: string) => void
+  results: SearchResult[]
+  onSelectCity: (city: SearchResult) => void
+  isLoading: boolean
+  error: string | null
+}
+
+export default function CitySearch({ onSearch, results, onSelectCity, isLoading, error }: Props) {
   const [query, setQuery] = useState('')
 
   useEffect(() => {
-    // Client-side search is instant, so search immediately
     onSearch(query)
   }, [query])
 
-  const handleInputChange = (e) => {
-    const value = e.target.value
-    setQuery(value)
-  }
-
-  const handleSelectCity = (city) => {
+  const handleSelectCity = (city: SearchResult) => {
     onSelectCity(city)
     setQuery('')
   }
 
   return (
     <div className="relative">
-      {/* Search Input */}
       <div className="relative">
         <input
           type="text"
           value={query}
-          onChange={handleInputChange}
+          onChange={(e) => setQuery(e.target.value)}
           placeholder="Search for a city..."
           className="w-full px-4 py-3 pl-10 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-warm-accent focus:ring-2 focus:ring-warm-accent/30 transition-all"
         />
         <Search className="absolute left-3 top-3.5 w-5 h-5 text-white/50" />
-
         {isLoading && (
           <div className="absolute right-3 top-3.5">
             <div className="animate-spin h-5 w-5 border-2 border-warm-accent border-t-transparent rounded-full" />
@@ -40,7 +41,6 @@ export default function CitySearch({ onSearch, results, onSelectCity, isLoading,
         )}
       </div>
 
-      {/* Error Message */}
       {error && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -52,7 +52,6 @@ export default function CitySearch({ onSearch, results, onSelectCity, isLoading,
         </motion.div>
       )}
 
-      {/* Dropdown Results */}
       {results.length > 0 && !error && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -62,7 +61,7 @@ export default function CitySearch({ onSearch, results, onSelectCity, isLoading,
         >
           {results.map((city, index) => (
             <motion.button
-              key={city.id || index}
+              key={city.place_id || index}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
@@ -70,10 +69,7 @@ export default function CitySearch({ onSearch, results, onSelectCity, isLoading,
               className="w-full px-4 py-3 text-left hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0 text-white"
             >
               <div className="font-medium">{city.name}</div>
-              <div className="text-xs text-white/50">
-                {city.countryCode && `${city.countryCode}`}
-                {city.admin1Code && ` • ${city.admin1Code}`}
-              </div>
+              <div className="text-xs text-white/50">{city.country}</div>
             </motion.button>
           ))}
         </motion.div>

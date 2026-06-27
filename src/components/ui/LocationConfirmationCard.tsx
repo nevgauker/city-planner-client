@@ -1,13 +1,15 @@
 import { motion } from 'framer-motion'
 import { MapPin, Check, X } from 'lucide-react'
 
-export default function LocationConfirmationCard({
-  address,
-  city,
-  isLoading,
-  onConfirm,
-  onChangeLocation,
-}) {
+interface Props {
+  address: string
+  city: string
+  isLoading: boolean
+  onConfirm: () => void
+  onChangeLocation: () => void
+}
+
+export default function LocationConfirmationCard({ address, city, isLoading, onConfirm, onChangeLocation }: Props) {
   return (
     <motion.div
       initial={{ y: 100, opacity: 0 }}
@@ -24,7 +26,6 @@ export default function LocationConfirmationCard({
             <p className="text-white/60 text-xs mb-4">in {city}</p>
           </div>
         </div>
-
         <div className="flex gap-3">
           <button
             onClick={onChangeLocation}
@@ -40,9 +41,7 @@ export default function LocationConfirmationCard({
             className="flex-1 px-4 py-2 bg-warm-accent hover:bg-warm-light text-navy-900 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {isLoading ? (
-              <>
-                <div className="animate-spin h-4 w-4 border-2 border-navy-900 border-t-transparent rounded-full" />
-              </>
+              <div className="animate-spin h-4 w-4 border-2 border-navy-900 border-t-transparent rounded-full" />
             ) : (
               <>
                 <Check className="w-4 h-4" />

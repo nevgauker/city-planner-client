@@ -1,4 +1,3 @@
-// Activity block in the itinerary
 export interface ActivityBlock {
   activity: string
   place_name: string
@@ -7,15 +6,16 @@ export interface ActivityBlock {
   lng: number
   duration_minutes: number
   notes: string
+  budget_usd?: number
 }
 
-// Single day in the itinerary
 export interface ItineraryDay {
   day: number
   date: string
   weather: string
   temperature: number
   weatherCode: number
+  budget_usd?: number
   blocks: {
     morning: ActivityBlock
     afternoon: ActivityBlock
@@ -23,13 +23,11 @@ export interface ItineraryDay {
   }
 }
 
-// Complete itinerary response
 export interface ItineraryResponse {
   success: boolean
   itinerary: ItineraryDay[]
 }
 
-// Weather forecast data
 export interface WeatherData {
   daily: {
     time: string[]
@@ -39,14 +37,9 @@ export interface WeatherData {
   }
 }
 
-// Trip request data
 export interface TripRequest {
   city: string
-  homeBase: {
-    lat: number
-    lng: number
-    address: string
-  }
+  homeBase: HomeBase
   startDate: string
   endDate: string
   travelStyles: string[]
@@ -54,7 +47,22 @@ export interface TripRequest {
   weatherForecast?: WeatherData
 }
 
-// City search result
+export interface HomeBase {
+  lat: number
+  lng: number
+  address: string
+}
+
+export interface SearchResult {
+  place_id: string
+  name: string
+  country: string
+  description: string
+  latitude?: number
+  longitude?: number
+  countryCode?: string
+}
+
 export interface City {
   id?: number
   name: string
@@ -64,4 +72,39 @@ export interface City {
   longitude: number
   countryCode?: string
   population?: number
+  place_id?: string
+}
+
+export interface User {
+  id: string
+  email: string
+  planTier: string
+  monthlyGenerations: number
+  monthlyGenerationsLimit: number
+  monthlyRegenerations: number
+  monthlyRegenerationsLimit: number
+  daysUntilReset: number
+}
+
+export interface Quota {
+  monthlyGenerations: number
+  monthlyGenerationsLimit: number
+  monthlyRegenerations: number
+  monthlyRegenerationsLimit: number
+  daysUntilReset: number
+  planTier: string
+}
+
+export interface SavedTrip {
+  id: string
+  city: string
+  title?: string
+  startDate: string
+  endDate: string
+  createdAt?: string
+  travelStyles: string[]
+  pace: 'Relaxed' | 'Balanced' | 'Packed'
+  homeBase: HomeBase
+  coordinates?: [number, number] | null
+  itineraryData: ItineraryDay[] | string
 }
