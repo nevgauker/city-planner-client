@@ -12,6 +12,7 @@ import {
   getMarkerColor,
   generateICS,
 } from './utils'
+import type { ItineraryDay } from '../types/api'
 
 describe('utils', () => {
   describe('calculateDistance', () => {
@@ -163,11 +164,17 @@ describe('utils', () => {
       const itinerary = [
         {
           date: '2024-06-27',
+          day: 1,
+          weather: 'Partly cloudy',
+          temperature: 22,
+          weatherCode: 2,
           blocks: {
             morning: {
               activity: 'Visit Eiffel Tower',
               place_name: 'Eiffel Tower, Paris',
               category: 'Culture',
+              lat: 48.8584,
+              lng: 2.2945,
               duration_minutes: 120,
               notes: 'Don\'t forget camera',
             },
@@ -175,7 +182,7 @@ describe('utils', () => {
             evening: null,
           },
         },
-      ]
+      ] as unknown as ItineraryDay[]
 
       const ics = generateICS(itinerary, 'Paris')
 
@@ -199,11 +206,17 @@ describe('utils', () => {
       const itinerary = [
         {
           date: '2024-06-27',
+          day: 1,
+          weather: 'Clear',
+          temperature: 20,
+          weatherCode: 0,
           blocks: {
             morning: {
               activity: 'Visit; Tower',
               place_name: 'Tower, Place',
               category: 'Culture',
+              lat: 48.8584,
+              lng: 2.2945,
               duration_minutes: 60,
               notes: 'Line 1\nLine 2',
             },
@@ -211,7 +224,7 @@ describe('utils', () => {
             evening: null,
           },
         },
-      ]
+      ] as unknown as ItineraryDay[]
 
       const ics = generateICS(itinerary, 'Paris')
 

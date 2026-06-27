@@ -173,7 +173,7 @@ describe('api - local storage functions', () => {
       const itinerary: ItineraryDay[] = []
 
       const encoded = encodeTripForShare(tripData, itinerary)
-      const decoded = decodeTripFromShare(encoded)
+      const decoded = decodeTripFromShare(encoded) as any
 
       expect(decoded).toBeDefined()
       expect(decoded?.city).toBe('Paris')
@@ -187,11 +187,11 @@ describe('api - local storage functions', () => {
       const tripData = { city: 'Paris', startDate: '2024-06-27', itinerary: [] }
       const encoded = btoa(JSON.stringify(tripData))
 
-      const decoded = decodeTripFromShare(encoded)
+      const decoded = decodeTripFromShare(encoded) as any
 
       expect(decoded).toBeDefined()
-      expect(decoded?.city).toBe('Paris')
-      expect(decoded?.itinerary).toEqual([])
+      expect((decoded as any).city).toBe('Paris')
+      expect(decoded.itinerary).toEqual([])
     })
 
     it('should return null for invalid base64', () => {
