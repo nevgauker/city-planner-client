@@ -61,7 +61,7 @@ export default function TripDetailsStage({ city, onSubmit, onBack }: Props) {
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-full bg-gradient-to-b from-neutral-dark to-taupe-700 flex flex-col items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-full bg-cream-50 flex flex-col items-center justify-center p-3 sm:p-4 overflow-y-auto">
       <BackButton onClick={onBack} />
       <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="w-full max-w-2xl my-4">
         <TripDetailsForm
