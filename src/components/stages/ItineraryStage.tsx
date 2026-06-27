@@ -216,14 +216,14 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
         <motion.button
           onClick={() => { setFeedbackRating(parseInt(localStorage.getItem(`feedback_rating_${city}`) || '0')); setShowFeedback(true) }}
           whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
-          className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 w-12 h-12 rounded-full bg-accent-terracotta/20 hover:bg-accent-terracotta/40 border border-accent-terracotta/50 flex items-center justify-center transition-colors"
+          className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 w-12 h-12 rounded-full bg-accent-terracotta/40 hover:bg-accent-terracotta/60 border border-accent-terracotta transition-colors"
         >
           <span className="text-xl">💬</span>
         </motion.button>
 
         <div className="no-print absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-10 flex gap-2 flex-col sm:flex-row">
-          <button onClick={handleShareItinerary} className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-terracotta hover:bg-accent-terracotta_light text-white rounded-lg font-medium transition-colors">🔗 Share</button>
-          <button onClick={handleCalendarExport} className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors">📅 Calendar</button>
+          <button onClick={handleShareItinerary} className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-terracotta hover:bg-accent-terracotta_light text-neutral-dark rounded-lg font-medium transition-colors">🔗 Share</button>
+          <button onClick={handleCalendarExport} className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-sage hover:bg-accent-sage_light text-neutral-dark rounded-lg font-medium transition-colors">📅 Calendar</button>
           <button onClick={() => window.print()} className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-terracotta hover:bg-accent-terracotta_light text-neutral-dark rounded-lg font-medium transition-colors">🖨️ Print</button>
         </div>
       </div>

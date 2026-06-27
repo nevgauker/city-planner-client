@@ -47,7 +47,7 @@ export default function GoogleItineraryMap({ itinerary, selectedActivityIndex, h
       zoom={12}
       options={{ mapTypeControl: false, fullscreenControl: false, streetViewControl: false, styles: modernCivicMapStyle as google.maps.MapTypeStyle[], backgroundColor: '#f5f1e8' }}
     >
-      <PolylineF path={[homeCoords, ...allActivities.map((a) => ({ lat: a.lat, lng: a.lng }))]} options={{ strokeColor: '#ff9d56', strokeOpacity: 0.4, strokeWeight: 2 }} />
+      <PolylineF path={[homeCoords, ...allActivities.map((a) => ({ lat: a.lat, lng: a.lng }))]} options={{ strokeColor: '#b8674f', strokeOpacity: 0.8, strokeWeight: 3 }} />
       <MarkerF position={homeCoords} title="Home Base" icon={{ path: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z', fillColor: '#ffc68d', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2, scale: 2.5 }} />
       {allActivities.map((activity) => (
         <MarkerF
