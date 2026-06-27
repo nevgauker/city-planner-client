@@ -43,6 +43,7 @@ const App: FC = () => {
   const [showSavedTrips, setShowSavedTrips] = useState(false)
   const [pendingGeneration, setPendingGeneration] = useState(false)
   const [existingItinerary, setExistingItinerary] = useState<ItineraryDay[] | null>(null)
+  const [isNewTrip, setIsNewTrip] = useState(false)
   const [tripData, setTripData] = useState<TripData>({
     city: null,
     coordinates: null,
@@ -68,6 +69,7 @@ const App: FC = () => {
           ...trip,
         }))
         setExistingItinerary(itinerary)
+        setIsNewTrip(false)
         setCurrentStage(STAGES.ITINERARY)
         toast.success('Shared trip loaded!')
       } else {
@@ -100,6 +102,7 @@ const App: FC = () => {
     pace: 'Relaxed' | 'Balanced' | 'Packed'
   }): void => {
     setExistingItinerary(null)
+    setIsNewTrip(true)
     setTripData((prev) => ({
       ...prev,
       startDate: details.startDate,
@@ -132,7 +135,11 @@ const App: FC = () => {
   }
 
   const handleBackToDetails = (): void => {
-    setCurrentStage(STAGES.DETAILS)
+    if (isNewTrip) {
+      setCurrentStage(STAGES.DETAILS)
+    } else {
+      setCurrentStage(STAGES.GLOBE)
+    }
   }
 
   const handleLoadSavedTrip = (savedTripData: TripData, itinerary: ItineraryDay[]): void => {
@@ -141,6 +148,7 @@ const App: FC = () => {
       ...savedTripData,
     }))
     setExistingItinerary(itinerary)
+    setIsNewTrip(false)
     setCurrentStage(STAGES.ITINERARY)
   }
 
