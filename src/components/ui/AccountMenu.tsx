@@ -25,7 +25,7 @@ export default function AccountMenu({ onClose, quota, onViewTrips, onLogout }: P
 
   return (
     <motion.div
-      className="absolute top-full right-0 mt-2 w-56 glass-effect card-elevation rounded-lg p-4 z-50"
+      className="absolute top-full right-0 mt-2 w-56 card-elevation rounded-lg p-4 z-50"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
@@ -33,24 +33,24 @@ export default function AccountMenu({ onClose, quota, onViewTrips, onLogout }: P
     >
       <div className="space-y-4">
         <div>
-          <p className="text-white/80 text-sm mb-1">Account</p>
-          <p className="text-white font-medium truncate">{user?.email}</p>
+          <p className="text-neutral-light text-sm mb-1">Account</p>
+          <p className="text-neutral-dark font-medium truncate">{user?.email}</p>
         </div>
-        <div className="border-t border-white/20" />
+        <div className="border-t border-taupe-300" />
         <div>
-          <p className="text-white/80 text-sm mb-1">Plan</p>
-          <p className="text-warm-accent font-medium capitalize">{quota?.planTier ?? 'Beta'} (free)</p>
+          <p className="text-neutral-light text-sm mb-1">Plan</p>
+          <p className="text-accent-sage font-medium capitalize">{quota?.planTier ?? 'Beta'} (free)</p>
         </div>
-        <div className="border-t border-white/20" />
+        <div className="border-t border-taupe-300" />
         <div>
-          <p className="text-white/80 text-sm mb-1">Quota</p>
-          <p className="text-white font-medium">{remaining} of {limit} generations left</p>
-          <p className="text-white/60 text-xs mt-1">Resets in {resetDays} days</p>
+          <p className="text-neutral-light text-sm mb-1">Quota</p>
+          <p className="text-neutral-dark font-medium">{remaining} of {limit} generations left</p>
+          <p className="text-neutral-light text-xs mt-1">Resets in {resetDays} days</p>
         </div>
-        <div className="border-t border-white/20" />
+        <div className="border-t border-taupe-300" />
         <motion.button
           onClick={() => { onViewTrips?.(); onClose() }}
-          className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-blue-900/30 border border-blue-500/50 hover:bg-blue-900/50 rounded-lg text-blue-300 font-medium transition-all"
+          className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-accent-sage/10 border border-accent-sage/30 hover:bg-accent-sage/20 rounded-lg text-accent-sage font-medium transition-all"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -59,7 +59,7 @@ export default function AccountMenu({ onClose, quota, onViewTrips, onLogout }: P
         </motion.button>
         <motion.button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-red-900/30 border border-red-500/50 hover:bg-red-900/50 rounded-lg text-red-300 font-medium transition-all"
+          className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-accent-terracotta/10 border border-accent-terracotta/30 hover:bg-accent-terracotta/20 rounded-lg text-accent-terracotta font-medium transition-all"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
