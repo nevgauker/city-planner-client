@@ -210,8 +210,8 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
         />
       </div>
 
-      <div className="no-print w-full md:w-2/3 lg:w-3/5 h-1/2 md:h-full relative">
-        <GoogleItineraryMap itinerary={itinerary} selectedActivityIndex={selectedActivityIndex} homeBase={homeBase} />
+      <div className="no-print w-full md:w-2/3 lg:w-3/5 h-1/2 md:h-full relative pt-16 md:pt-4">
+        <GoogleItineraryMap itinerary={itinerary} selectedActivityIndex={selectedActivityIndex} homeBase={homeBase} onMarkerClick={setSelectedActivityIndex} onHomeBaseClick={() => setSelectedActivityIndex(null)} />
 
         <motion.button
           onClick={() => { setFeedbackRating(parseInt(localStorage.getItem(`feedback_rating_${city}`) || '0')); setShowFeedback(true) }}

@@ -39,6 +39,7 @@ export default function ItineraryTimeline({
   }
 
   const day2Ref = useRef<HTMLDivElement>(null)
+  const activityRefsMap = useRef<Map<number, HTMLElement>>(new Map())
 
   useEffect(() => {
     if (!day2Ref.current || !onScrolledPastDay2) return
@@ -56,6 +57,15 @@ export default function ItineraryTimeline({
     observer.observe(day2Ref.current)
     return () => observer.disconnect()
   }, [onScrolledPastDay2])
+
+  useEffect(() => {
+    if (selectedActivityIndex !== null && activityRefsMap.current.has(selectedActivityIndex)) {
+      const element = activityRefsMap.current.get(selectedActivityIndex)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      }
+    }
+  }, [selectedActivityIndex])
 
   let activityCount = 0
   const startDate = new Date(tripData?.startDate || '')
@@ -121,6 +131,7 @@ export default function ItineraryTimeline({
             return (
               <motion.button
                 key={`${dayIndex}-${period}`}
+                ref={(el) => { if (el) activityRefsMap.current.set(globalActivityIndex, el) }}
                 onClick={() => onActivitySelect(globalActivityIndex)}
                 whileHover={{ scale: 1.02 }}
                 className={`w-full text-left p-3 sm:p-4 rounded-lg transition-all ${isSelected ? 'bg-accent-terracotta/20 border border-accent-terracotta' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}
