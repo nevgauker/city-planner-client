@@ -100,6 +100,16 @@ export default function AuthModal({ onSuccess, onClose }: Props) {
         {/* Google OAuth Button */}
         {googleClientId && (
           <GoogleOAuthProvider clientId={googleClientId}>
+            <motion.div
+              className="mb-4 p-3 bg-accent-terracotta/5 border border-accent-terracotta/30 rounded-lg"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <p className="text-xs text-neutral-dark">
+                <strong>💡 Tip:</strong> Sign in with Google uses your Google account. If you already have an account with this email and password, signing in with Google will link to that account.
+              </p>
+            </motion.div>
+
             <div className="mb-6 flex justify-center">
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
