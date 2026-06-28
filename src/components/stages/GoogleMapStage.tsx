@@ -56,7 +56,7 @@ export default function GoogleMapStage({ city, coordinates, onHomeBaseSelected, 
       {!selectedPin && (
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="absolute top-24 left-1/2 -translate-x-1/2 z-10">
           <div className="glass-effect card-elevation px-6 py-3 rounded-lg text-center">
-            <p className="text-neutral-dark text-sm">Click on the map to select your home base in {city}</p>
+            <p className="text-neutral-dark text-base sm:text-sm">Click on the map to select your home base in {city}</p>
           </div>
         </motion.div>
       )}

@@ -35,19 +35,19 @@ body {
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply text-neutral-dark font-light tracking-tight;
+    @apply text-neutral-dark font-semibold tracking-tight;
   }
 
   h1 {
-    @apply text-4xl font-light mb-4;
+    @apply text-4xl font-bold mb-4;
   }
 
   h2 {
-    @apply text-2xl font-light mb-3;
+    @apply text-2xl font-semibold mb-3;
   }
 
   h3 {
-    @apply text-lg font-light mb-2;
+    @apply text-lg font-semibold mb-2;
   }
 }
 

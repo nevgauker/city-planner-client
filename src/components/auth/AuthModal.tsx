@@ -79,8 +79,8 @@ export default function AuthModal({ onSuccess, onClose }: Props) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-8">
-          <h2 className="text-2xl font-light text-neutral-dark mb-2">{tab === 'signin' ? 'Sign In' : 'Create Account'}</h2>
-          <p className="text-neutral-light text-sm">{tab === 'signup' ? 'Create your account to plan your next adventure' : 'Sign in to your account'}</p>
+          <h2 className="text-2xl font-semibold text-neutral-dark mb-2">{tab === 'signin' ? 'Sign In' : 'Create Account'}</h2>
+          <p className="text-neutral-light text-base sm:text-sm">{tab === 'signup' ? 'Create your account to plan your next adventure' : 'Sign in to your account'}</p>
         </div>
 
         <div className="flex gap-4 mb-6">
@@ -105,7 +105,7 @@ export default function AuthModal({ onSuccess, onClose }: Props) {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <p className="text-xs text-neutral-dark">
+              <p className="text-sm sm:text-xs text-neutral-dark">
                 <strong>💡 Tip:</strong> Sign in with Google uses your Google account. If you already have an account with this email and password, signing in with Google will link to that account.
               </p>
             </motion.div>
@@ -133,7 +133,7 @@ export default function AuthModal({ onSuccess, onClose }: Props) {
             { label: 'Password', type: 'password', value: password, onChange: setPassword, icon: Lock, placeholder: '••••••••' }
           ].map(({ label, type, value, onChange, icon: Icon, placeholder }) => (
             <div key={label}>
-              <label className="block text-neutral-dark text-sm mb-2 font-medium">{label}</label>
+              <label className="block text-neutral-dark text-base sm:text-sm mb-2 font-medium">{label}</label>
               <div className="relative">
                 <Icon className="absolute left-3 top-3.5 w-5 h-5 text-accent-terracotta/60" />
                 <input
@@ -149,7 +149,7 @@ export default function AuthModal({ onSuccess, onClose }: Props) {
 
           {tab === 'signup' && (
             <div>
-              <label className="block text-neutral-dark text-sm mb-2 font-medium">Confirm Password</label>
+              <label className="block text-neutral-dark text-base sm:text-sm mb-2 font-medium">Confirm Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3.5 w-5 h-5 text-accent-terracotta/60" />
                 <input

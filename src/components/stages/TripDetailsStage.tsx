@@ -1,16 +1,17 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { toast } from 'react-toastify'
 import TripDetailsForm from '../ui/TripDetailsForm'
 import BackButton from '../ui/BackButton'
 
 const TRAVEL_STYLES = ['Culture', 'Food & Drink', 'Nightlife', 'Nature', 'Shopping', 'Hidden Gems', 'Wellness']
 const PACE_OPTIONS: ('Relaxed' | 'Balanced' | 'Packed')[] = ['Relaxed', 'Balanced', 'Packed']
-const TRAVEL_STYLE_PRESETS: Record<string, string[]> = {
-  'Beach Bum': ['Nature', 'Food & Drink', 'Wellness'],
-  'Culture Vulture': ['Culture', 'Hidden Gems', 'Food & Drink'],
-  'Foodie Paradise': ['Food & Drink', 'Culture', 'Shopping'],
-  'Adventure Seeker': ['Nature', 'Nightlife', 'Hidden Gems'],
-  'Luxury Explorer': ['Shopping', 'Wellness', 'Food & Drink'],
+const TRAVEL_STYLE_PRESETS = {
+  'Beach Bum': { emoji: '🏖️', subtitle: 'Sun, sea & chill', styles: ['Nature', 'Food & Drink', 'Wellness'] },
+  'Culture Vulture': { emoji: '🎭', subtitle: 'Art, history & museums', styles: ['Culture', 'Hidden Gems', 'Food & Drink'] },
+  'Foodie Paradise': { emoji: '🍝', subtitle: 'Markets, bites & drinks', styles: ['Food & Drink', 'Culture', 'Shopping'] },
+  'Adventure Seeker': { emoji: '🏔️', subtitle: 'Outdoors & off the map', styles: ['Nature', 'Nightlife', 'Hidden Gems'] },
+  'Luxury Explorer': { emoji: '💎', subtitle: 'Comfort & exclusivity', styles: ['Shopping', 'Wellness', 'Food & Drink'] },
 }
 const TRIP_DURATION_PRESETS = [
   { label: 'Weekend', days: 3 },
@@ -43,9 +44,21 @@ export default function TripDetailsStage({ city, onSubmit, onBack }: Props) {
   }
 
   const [formData, setFormData] = useState<FormData>({ ...getDefaultDates(), travelStyles: [], pace: 'Balanced' })
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null)
 
-  const handleTravelStyleToggle = (style: string) =>
-    setFormData((prev) => ({ ...prev, travelStyles: prev.travelStyles.includes(style) ? prev.travelStyles.filter((s) => s !== style) : [...prev.travelStyles, style] }))
+  const handleTravelStyleToggle = (style: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      travelStyles: prev.travelStyles.includes(style) ? prev.travelStyles.filter((s) => s !== style) : [...prev.travelStyles, style],
+    }))
+    setSelectedPreset(null)
+  }
+
+  const handleStylePreset = (preset: string) => {
+    const styles = TRAVEL_STYLE_PRESETS[preset as keyof typeof TRAVEL_STYLE_PRESETS]?.styles || []
+    setFormData((prev) => ({ ...prev, travelStyles: styles }))
+    setSelectedPreset(preset)
+  }
 
   const handleTripDurationPreset = (days: number) => {
     const start = new Date(); start.setDate(start.getDate() + 1)
@@ -55,15 +68,21 @@ export default function TripDetailsStage({ city, onSubmit, onBack }: Props) {
   }
 
   const handleSubmit = () => {
-    if (!formData.startDate || !formData.endDate) { alert('Please select both start and end dates'); return }
-    if (formData.travelStyles.length === 0) { alert('Please select at least one travel style'); return }
+    if (!formData.startDate || !formData.endDate) {
+      toast.warn('Please select both start and end dates')
+      return
+    }
+    if (formData.travelStyles.length === 0) {
+      toast.warn('Please select at least one travel style')
+      return
+    }
     onSubmit(formData)
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-full bg-cream-50 flex flex-col items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-full bg-cream-50 flex flex-col items-center pt-20 sm:pt-24 px-3 sm:px-4 pb-6 overflow-y-auto">
       <BackButton onClick={onBack} />
-      <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="w-full max-w-2xl my-4">
+      <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="w-full max-w-2xl mb-6">
         <TripDetailsForm
           city={city}
           formData={formData}
@@ -75,8 +94,9 @@ export default function TripDetailsStage({ city, onSubmit, onBack }: Props) {
           onSubmit={handleSubmit}
           tripDurationPresets={TRIP_DURATION_PRESETS}
           onTripDurationPreset={handleTripDurationPreset}
-          stylePresets={TRAVEL_STYLE_PRESETS}
-          onStylePreset={(preset) => setFormData((prev) => ({ ...prev, travelStyles: TRAVEL_STYLE_PRESETS[preset] }))}
+          stylePresetsWithInfo={TRAVEL_STYLE_PRESETS}
+          onStylePreset={handleStylePreset}
+          selectedPreset={selectedPreset}
         />
       </motion.div>
     </motion.div>

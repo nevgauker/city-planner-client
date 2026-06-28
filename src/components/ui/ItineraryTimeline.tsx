@@ -85,11 +85,11 @@ export default function ItineraryTimeline({
         <h2 className="text-xl sm:text-2xl font-bold text-neutral-dark mb-1">
           {tripData?.city} · {itinerary.length} days
         </h2>
-        <p className="text-neutral-dark/60 text-xs sm:text-sm mb-3">
+        <p className="text-neutral-dark/60 text-sm sm:text-sm mb-3">
           {formatDate(tripData?.startDate || '')} – {formatDate(tripData?.endDate || '')}
         </p>
         {tripData?.homeBase?.address && (
-          <p className="text-neutral-dark/50 text-xs sm:text-sm">
+          <p className="text-neutral-dark/50 text-sm sm:text-sm">
             Starting from: <span className="text-neutral-dark/70">{tripData.homeBase.address}</span>
           </p>
         )}
@@ -109,7 +109,7 @@ export default function ItineraryTimeline({
               <h3 className="text-base sm:text-lg font-bold text-neutral-dark">
                 Day {dayIndex + 1} — {getDayOfWeek(dayIndex)}
               </h3>
-              <div className="flex items-center gap-2 sm:gap-3 mt-2 text-xs sm:text-sm text-neutral-dark/70 flex-wrap">
+              <div className="flex items-center gap-2 sm:gap-3 mt-2 text-sm sm:text-sm text-neutral-dark/70 flex-wrap">
                 <div className="flex items-center gap-1">
                   <span>{getWeatherIcon(day.weatherCode)}</span>
                   <span>{getWeatherDescription(day.weatherCode)}</span>
@@ -146,13 +146,13 @@ export default function ItineraryTimeline({
                     </div>
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-sm sm:text-base text-neutral-dark mb-1">{activity.activity}</p>
-                    <p className="text-xs sm:text-sm text-neutral-dark/70">{activity.place_name}</p>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-neutral-dark/50 flex-wrap">
+                    <p className="font-medium text-base sm:text-base text-neutral-dark mb-1">{activity.activity}</p>
+                    <p className="text-sm sm:text-sm text-neutral-dark/70">{activity.place_name}</p>
+                    <div className="flex items-center gap-2 mt-2 text-sm sm:text-xs text-neutral-dark/50 flex-wrap">
                       <span className="px-2 py-1 bg-white/10 rounded">{activity.category}</span>
                       <span>⏱️ {activity.duration_minutes} min</span>
                     </div>
-                    {activity.notes && <p className="text-xs text-neutral-dark/60 mt-2 italic">{activity.notes}</p>}
+                    {activity.notes && <p className="text-sm sm:text-xs text-neutral-dark/60 mt-2 italic">{activity.notes}</p>}
                   </div>
                   <motion.div
                     onClick={(e) => { e.stopPropagation(); onSwapActivity?.(dayIndex, period, activity) }}
