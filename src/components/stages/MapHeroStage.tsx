@@ -97,7 +97,7 @@ export default function MapHeroStage({ onCitySelected }: Props) {
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-screen h-screen">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-screen overflow-hidden">
       {/* Full-screen Google Map */}
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: '100%' }}

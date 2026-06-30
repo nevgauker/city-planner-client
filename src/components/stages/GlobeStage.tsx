@@ -94,7 +94,7 @@ export default function GlobeStage({ onCitySelected }: Props) {
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-screen h-screen">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative w-full h-screen overflow-hidden">
       {!isMobile && <GlobeCanvas ref={globeRef} />}
 
       {isMobile && (

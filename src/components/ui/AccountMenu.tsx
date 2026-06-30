@@ -25,7 +25,8 @@ export default function AccountMenu({ onClose, quota, onViewTrips, onLogout }: P
 
   return (
     <motion.div
-      className="absolute top-full right-0 mt-2 w-56 card-elevation rounded-lg p-4 z-50"
+      className="absolute top-full right-0 mt-2 w-56 max-w-[calc(100vw-2rem)] card-elevation rounded-lg p-4 z-50"
+      style={{ maxWidth: 'calc(100vw - 2rem)' }}
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}

@@ -47,12 +47,12 @@ export default function QuotaBar({ onSignInClick, onViewTrips, onLogout }: Props
 
   return (
     <motion.div
-      className="fixed top-4 right-4 z-40"
+      className="fixed top-4 right-4 z-40 max-w-[calc(100vw-2rem)]"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
         {isExhausted ? (
           <motion.button
             onClick={async () => {
@@ -68,17 +68,17 @@ export default function QuotaBar({ onSignInClick, onViewTrips, onLogout }: Props
             disabled={hasNotified}
             whileHover={!hasNotified ? { scale: 1.05 } : {}}
             whileTap={!hasNotified ? { scale: 0.95 } : {}}
-            className={`glass-effect rounded-full px-4 py-2 text-sm font-semibold transition-all ${
+            className={`glass-effect rounded-full px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
               hasNotified ? 'text-accent-sage cursor-default' : 'text-accent-terracotta hover:bg-cream-200 cursor-pointer'
             }`}
             title={`Resets in ${daysUntilReset} ${daysUntilReset === 1 ? 'day' : 'days'}`}
           >
-            {hasNotified ? "✓ On the list" : `Resets in ${daysUntilReset}d`}
+            {hasNotified ? "✓ List" : `${daysUntilReset}d`}
           </motion.button>
         ) : (
-          <div className="glass-effect rounded-full px-4 py-2 group cursor-help">
-            <span className="text-sm font-semibold text-neutral-dark">
-              {remaining} of {limit} left
+          <div className="glass-effect rounded-full px-2 sm:px-4 py-2 group cursor-help">
+            <span className="text-xs sm:text-sm font-semibold text-neutral-dark whitespace-nowrap">
+              {remaining}/{limit}
             </span>
             <div className="hidden group-hover:block absolute top-full mt-2 right-0 bg-neutral-dark text-cream-50 text-xs rounded px-3 py-2 whitespace-nowrap z-50 border border-taupe-300">
               Generation uses 1 credit. Resets every 30 days.
@@ -88,12 +88,12 @@ export default function QuotaBar({ onSignInClick, onViewTrips, onLogout }: Props
 
         <motion.button
           onClick={() => setShowMenu(!showMenu)}
-          className="glass-effect rounded-full px-4 py-2 flex items-center gap-2 hover:bg-cream-200 transition-all"
+          className="glass-effect rounded-full px-2 sm:px-4 py-2 flex items-center gap-1 sm:gap-2 hover:bg-cream-200 transition-all"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <span className="text-sm font-medium text-neutral-dark truncate max-w-[120px]">{user.email}</span>
-          <ChevronDown className={`w-4 h-4 text-neutral-light transition-transform ${showMenu ? 'rotate-180' : ''}`} />
+          <span className="text-xs sm:text-sm font-medium text-neutral-dark truncate max-w-[80px] sm:max-w-[120px]">{user.email}</span>
+          <ChevronDown className={`w-3 h-3 sm:w-4 sm:h-4 text-neutral-light transition-transform ${showMenu ? 'rotate-180' : ''}`} />
         </motion.button>
       </div>
 
