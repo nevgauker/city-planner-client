@@ -203,7 +203,7 @@ Located in `src/components/Globe.tsx`
 ## 🔍 Search Functionality
 
 The search component features:
-- Autocomplete powered by GeoDB API
+- Autocomplete powered by the Google Places API (proxied through the backend)
 - Real-time suggestions as you type
 - Detailed city information
 - Click to select and navigate

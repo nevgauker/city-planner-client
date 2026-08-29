@@ -108,9 +108,8 @@ interface GeocodingResult {
 }
 
 export async function reverseGeocode(lat: number, lng: number): Promise<GeocodingResult> {
-  const response = await axios.get<GeocodingResult>('https://nominatim.openstreetmap.org/reverse', {
-    params: { format: 'json', lat, lon: lng },
-    headers: { 'User-Agent': 'TravelPlanner/1.0' },
+  const response = await apiClient.get<GeocodingResult>('/api/reverse-geocode', {
+    params: { lat, lng },
   })
   return response.data
 }
@@ -166,6 +165,7 @@ export async function regenerateDay(
 interface SwapActivityResponse {
   success: boolean
   block: ActivityBlock
+  grounded?: boolean
 }
 
 export async function swapActivity(
@@ -175,7 +175,9 @@ export async function swapActivity(
   currentActivity: ActivityBlock,
   travelStyles: string[],
   pace: string,
-  homeBase: HomeBase
+  homeBase: HomeBase,
+  /** Places already scheduled elsewhere, so the swap does not duplicate one. */
+  excludePlaceIds?: string[]
 ): Promise<SwapActivityResponse> {
   try {
     const response = await apiClient.post<SwapActivityResponse>('/api/swap-activity', {
@@ -186,6 +188,7 @@ export async function swapActivity(
       currentActivity,
       travelStyles,
       pace,
+      excludePlaceIds,
     })
     return response.data
   } catch (error) {

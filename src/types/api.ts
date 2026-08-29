@@ -7,6 +7,17 @@ export interface ActivityBlock {
   duration_minutes: number
   notes: string
   budget_usd?: number
+
+  // Provenance — present only when the block was resolved against real place
+  // data. `source: 'generated'` means the server fell back to ungrounded
+  // generation, so these are absent and the coordinates are model-supplied.
+  place_id?: string
+  rating?: number
+  rating_count?: number
+  price_level?: number
+  address?: string
+  verified_at?: string
+  source?: 'grounded' | 'generated'
 }
 
 export interface ItineraryDay {
@@ -26,6 +37,8 @@ export interface ItineraryDay {
 export interface ItineraryResponse {
   success: boolean
   itinerary: ItineraryDay[]
+  /** False when no verified places were available and the model generated freely. */
+  grounded?: boolean
 }
 
 export interface WeatherData {

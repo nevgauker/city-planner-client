@@ -129,7 +129,14 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
     const key = `${dayIndex}-${blockType}`
     setSwappingActivity(key)
     try {
-      const result = await swapActivity(city, dayIndex, blockType, currentActivity, tripData.travelStyles, tripData.pace, homeBase)
+      // Everything already scheduled stays off the table, so a swap cannot
+      // hand back a venue the traveller is visiting on another day.
+      const scheduledPlaceIds = (itinerary ?? [])
+        .flatMap((day) => Object.values(day.blocks ?? {}))
+        .map((block) => block?.place_id)
+        .filter((id): id is string => Boolean(id))
+
+      const result = await swapActivity(city, dayIndex, blockType, currentActivity, tripData.travelStyles, tripData.pace, homeBase, scheduledPlaceIds)
       setItinerary((prev) => {
         if (!prev) return prev
         const updated = [...prev]
