@@ -9,7 +9,7 @@ import ItineraryTimeline from '../ui/ItineraryTimeline'
 import GoogleItineraryMap from '../map/GoogleItineraryMap'
 import BackButton from '../ui/BackButton'
 import FeedbackModal from '../ui/FeedbackModal'
-import type { ItineraryDay, HomeBase, ActivityBlock, TripRequest } from '../../types/api'
+import type { ItineraryDay, HomeBase, ActivityBlock, TripRequest, Preferences } from '../../types/api'
 
 interface TripData {
   city: string | null
@@ -18,6 +18,7 @@ interface TripData {
   endDate: string | null
   travelStyles: string[]
   pace: 'Relaxed' | 'Balanced' | 'Packed'
+  preferences?: Preferences
   itinerary?: ItineraryDay[] | null
 }
 
@@ -76,7 +77,7 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
         const result = await generateItinerary({ ...safeTrip, weatherForecast: weatherData ?? undefined })
         setItinerary(result.itinerary)
         saveTrip(`${city}-${Date.now()}`, { city, homeBase, startDate, endDate, travelStyles: tripData.travelStyles, pace: tripData.pace }, result.itinerary)
-        try { await saveTripToBackend(city, `${city} Trip`, startDate, endDate, tripData.travelStyles, tripData.pace, homeBase, result.itinerary) } catch { /* non-critical */ }
+        try { await saveTripToBackend(city, `${city} Trip`, startDate, endDate, tripData.travelStyles, tripData.pace, homeBase, result.itinerary, tripData.preferences) } catch { /* non-critical */ }
         toast.success('Itinerary generated & saved!')
         refreshQuota()
 

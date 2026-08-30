@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
 import citiesData from './cities.json'
-import type { City, SearchResult, HomeBase, ItineraryDay, WeatherData, TripRequest, ItineraryResponse, ActivityBlock, User } from '../types/api'
+import type { City, SearchResult, HomeBase, ItineraryDay, WeatherData, TripRequest, ItineraryResponse, ActivityBlock, User, Taxonomy, Preferences } from '../types/api'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
@@ -114,6 +114,24 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Geocodin
   return response.data
 }
 
+let taxonomyCache: Taxonomy | null = null
+
+/**
+ * The taxonomy is server-owned and only changes on deploy, so it is fetched
+ * once per session. Failing to load it must not block trip planning — callers
+ * fall back to the categories they already have.
+ */
+export async function getTaxonomy(): Promise<Taxonomy | null> {
+  if (taxonomyCache) return taxonomyCache
+  try {
+    const response = await apiClient.get<Taxonomy>('/api/taxonomy')
+    taxonomyCache = response.data
+    return taxonomyCache
+  } catch {
+    return null
+  }
+}
+
 export async function generateItinerary(tripData: TripRequest): Promise<ItineraryResponse> {
   try {
     const response = await apiClient.post<ItineraryResponse>('/api/generate-itinerary', {
@@ -123,6 +141,7 @@ export async function generateItinerary(tripData: TripRequest): Promise<Itinerar
       endDate: tripData.endDate,
       travelStyles: tripData.travelStyles,
       pace: tripData.pace,
+      preferences: tripData.preferences,
     })
     return response.data
   } catch (error) {
@@ -284,10 +303,11 @@ export const saveTripToBackend = (
   travelStyles: string[],
   pace: string,
   homeBase: HomeBase,
-  itineraryData: ItineraryDay[]
+  itineraryData: ItineraryDay[],
+  preferences?: Preferences
 ): Promise<unknown> =>
   apiClient
-    .post('/api/trips', { city, title, startDate, endDate, travelStyles, pace, homeBase, itineraryData })
+    .post('/api/trips', { city, title, startDate, endDate, travelStyles, pace, homeBase, itineraryData, preferences })
     .then((r) => r.data)
 
 export const submitFeedback = (

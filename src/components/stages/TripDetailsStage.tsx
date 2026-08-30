@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
 import TripDetailsForm from '../ui/TripDetailsForm'
 import BackButton from '../ui/BackButton'
+import { getTaxonomy } from '../../lib/api'
+import type { Taxonomy } from '../../types/api'
 
 const TRAVEL_STYLES = ['Culture', 'Food & Drink', 'Nightlife', 'Nature', 'Shopping', 'Hidden Gems', 'Wellness']
 const PACE_OPTIONS: ('Relaxed' | 'Balanced' | 'Packed')[] = ['Relaxed', 'Balanced', 'Packed']
@@ -25,6 +27,8 @@ interface FormData {
   endDate: string
   travelStyles: string[]
   pace: 'Relaxed' | 'Balanced' | 'Packed'
+  subCategories: Record<string, string[]>
+  dietary: string[]
 }
 
 interface Props {
@@ -43,20 +47,71 @@ export default function TripDetailsStage({ city, onSubmit, onBack }: Props) {
     return { startDate: fmt(tomorrow), endDate: fmt(endDate) }
   }
 
-  const [formData, setFormData] = useState<FormData>({ ...getDefaultDates(), travelStyles: [], pace: 'Balanced' })
+  const [formData, setFormData] = useState<FormData>({
+    ...getDefaultDates(),
+    travelStyles: [],
+    pace: 'Balanced',
+    subCategories: {},
+    dietary: [],
+  })
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null)
+  const [taxonomy, setTaxonomy] = useState<Taxonomy | null>(null)
+
+  // Sub-categories are an enhancement: if the taxonomy cannot be loaded the
+  // form still works with the styles below, so failure is silent by design.
+  useEffect(() => {
+    getTaxonomy().then(setTaxonomy)
+  }, [])
+
+  const categoryIdFor = (label: string) => taxonomy?.categories.find((c) => c.label === label)?.id
 
   const handleTravelStyleToggle = (style: string) => {
+    setFormData((prev) => {
+      const removing = prev.travelStyles.includes(style)
+      const subCategories = { ...prev.subCategories }
+
+      // Deselecting a style discards its refinements — keeping them would send
+      // preferences for a category the traveller is no longer asking for.
+      if (removing) {
+        const id = categoryIdFor(style)
+        if (id) delete subCategories[id]
+      }
+
+      return {
+        ...prev,
+        travelStyles: removing ? prev.travelStyles.filter((s) => s !== style) : [...prev.travelStyles, style],
+        subCategories,
+      }
+    })
+    setSelectedPreset(null)
+  }
+
+  const handleSubCategoryToggle = (categoryId: string, subId: string) => {
+    setFormData((prev) => {
+      const current = prev.subCategories[categoryId] ?? []
+      const next = current.includes(subId) ? current.filter((s) => s !== subId) : [...current, subId]
+      const subCategories = { ...prev.subCategories }
+      if (next.length) subCategories[categoryId] = next
+      else delete subCategories[categoryId]
+      return { ...prev, subCategories }
+    })
+  }
+
+  const handleDietaryToggle = (dietaryId: string) => {
     setFormData((prev) => ({
       ...prev,
-      travelStyles: prev.travelStyles.includes(style) ? prev.travelStyles.filter((s) => s !== style) : [...prev.travelStyles, style],
+      dietary: prev.dietary.includes(dietaryId)
+        ? prev.dietary.filter((d) => d !== dietaryId)
+        : [...prev.dietary, dietaryId],
     }))
-    setSelectedPreset(null)
   }
 
   const handleStylePreset = (preset: string) => {
     const styles = TRAVEL_STYLE_PRESETS[preset as keyof typeof TRAVEL_STYLE_PRESETS]?.styles || []
-    setFormData((prev) => ({ ...prev, travelStyles: styles }))
+    // A preset replaces the style selection outright, so refinements tied to the
+    // old selection no longer apply. Dietary needs are constraints, not part of
+    // the vibe, and survive.
+    setFormData((prev) => ({ ...prev, travelStyles: styles, subCategories: {} }))
     setSelectedPreset(preset)
   }
 
@@ -97,6 +152,9 @@ export default function TripDetailsStage({ city, onSubmit, onBack }: Props) {
           stylePresetsWithInfo={TRAVEL_STYLE_PRESETS}
           onStylePreset={handleStylePreset}
           selectedPreset={selectedPreset}
+          taxonomy={taxonomy}
+          onSubCategoryToggle={handleSubCategoryToggle}
+          onDietaryToggle={handleDietaryToggle}
         />
       </motion.div>
     </motion.div>

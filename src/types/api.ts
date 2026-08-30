@@ -58,6 +58,37 @@ export interface TripRequest {
   travelStyles: string[]
   pace: 'Relaxed' | 'Balanced' | 'Packed'
   weatherForecast?: WeatherData
+  preferences?: Preferences
+}
+
+/** Served by GET /api/taxonomy — the server owns this list. */
+export interface TaxonomySubCategory {
+  id: string
+  label: string
+}
+
+export interface TaxonomyCategory {
+  id: string
+  label: string
+  emoji: string
+  subCategories: TaxonomySubCategory[]
+}
+
+export interface TaxonomyDietaryOption {
+  id: string
+  label: string
+}
+
+export interface Taxonomy {
+  categories: TaxonomyCategory[]
+  dietary: TaxonomyDietaryOption[]
+}
+
+export interface Preferences {
+  /** Category id -> chosen sub-category ids. Soft preferences. */
+  subCategories?: Record<string, string[]>
+  /** Dietary constraint ids. Hard constraints. */
+  dietary?: string[]
 }
 
 export interface HomeBase {

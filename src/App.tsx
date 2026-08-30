@@ -11,7 +11,7 @@ import QuotaBar from './components/ui/QuotaBar'
 import SavedTripsPanel from './components/ui/SavedTripsPanel'
 import { useAuth } from './contexts/AuthContext'
 import { decodeTripFromShare } from './lib/api'
-import type { ItineraryDay, WeatherData } from './types/api'
+import type { ItineraryDay, WeatherData, Preferences } from './types/api'
 
 const STAGES = {
   GLOBE: 0,
@@ -32,6 +32,7 @@ interface TripData {
   endDate: string | null
   travelStyles: string[]
   pace: 'Relaxed' | 'Balanced' | 'Packed'
+  preferences?: Preferences
   itinerary?: ItineraryDay[] | null
   weatherForecast?: WeatherData
 }
@@ -100,6 +101,8 @@ const App: FC = () => {
     endDate: string
     travelStyles: string[]
     pace: 'Relaxed' | 'Balanced' | 'Packed'
+    subCategories: Record<string, string[]>
+    dietary: string[]
   }): void => {
     setExistingItinerary(null)
     setIsNewTrip(true)
@@ -109,6 +112,7 @@ const App: FC = () => {
       endDate: details.endDate,
       travelStyles: details.travelStyles,
       pace: details.pace,
+      preferences: { subCategories: details.subCategories, dietary: details.dietary },
     }))
 
     if (!user) {
