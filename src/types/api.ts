@@ -18,6 +18,11 @@ export interface ActivityBlock {
   address?: string
   verified_at?: string
   source?: 'grounded' | 'generated'
+  /**
+   * Present when the venue's dietary claim cannot be trusted for this specific
+   * location — an international chain whose menu varies by country.
+   */
+  dietary_caveat?: string
 }
 
 export interface ItineraryDay {
@@ -39,6 +44,11 @@ export interface ItineraryResponse {
   itinerary: ItineraryDay[]
   /** False when no verified places were available and the model generated freely. */
   grounded?: boolean
+  /**
+   * Things the traveller should know about how their itinerary was built —
+   * e.g. a dietary constraint that matched no venues, so no food was scheduled.
+   */
+  warnings?: string[]
 }
 
 export interface WeatherData {

@@ -76,6 +76,11 @@ export default function ItineraryStage({ tripData, onBack, existingItinerary }: 
 
         const result = await generateItinerary({ ...safeTrip, weatherForecast: weatherData ?? undefined })
         setItinerary(result.itinerary)
+
+        // A dietary constraint that matched nothing removes those venues
+        // entirely, which is correct but leaves an itinerary with no meals.
+        // Say so rather than letting it look like a bug.
+        result.warnings?.forEach((warning) => toast.warn(warning, { autoClose: 10000 }))
         saveTrip(`${city}-${Date.now()}`, { city, homeBase, startDate, endDate, travelStyles: tripData.travelStyles, pace: tripData.pace }, result.itinerary)
         try { await saveTripToBackend(city, `${city} Trip`, startDate, endDate, tripData.travelStyles, tripData.pace, homeBase, result.itinerary, tripData.preferences) } catch { /* non-critical */ }
         toast.success('Itinerary generated & saved!')
