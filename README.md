@@ -226,7 +226,7 @@ Users can:
 
 ## 📚 Additional Resources
 
-- [Project Architecture](../docs/PROJECT_SUMMARY.md)
+- [Project Architecture](../docs/PRD.md)
 - [Setup Guide](../docs/SETUP.md)
 - [Troubleshooting](../docs/TROUBLESHOOTING.md)
 - [Server README](../server/README.md)
@@ -268,7 +268,7 @@ npm run dev
 ## 🔗 Related Documentation
 
 - [Server README](../server/README.md)
-- [Project Architecture](../docs/PROJECT_SUMMARY.md)
+- [Project Architecture](../docs/PRD.md)
 - [Setup Guide](../docs/SETUP.md)
 - [Troubleshooting](../docs/TROUBLESHOOTING.md)
 
