@@ -152,6 +152,12 @@ export default function ItineraryTimeline({
                       <span className="px-2 py-1 bg-white/10 rounded">{activity.category}</span>
                       <span>⏱️ {activity.duration_minutes} min</span>
                     </div>
+                    {activity.dietary_caveat && (
+                      <p className="text-sm sm:text-xs text-accent-terracotta mt-2 flex items-start gap-1.5">
+                        <span aria-hidden="true">⚠️</span>
+                        <span>{activity.dietary_caveat}</span>
+                      </p>
+                    )}
                     {activity.notes && <p className="text-sm sm:text-xs text-neutral-dark/60 mt-2 italic">{activity.notes}</p>}
                   </div>
                   <motion.div

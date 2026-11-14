@@ -1,11 +1,14 @@
 import { motion } from 'framer-motion'
-import { Calendar, Zap, Sparkles } from 'lucide-react'
+import { Calendar, Zap, Sparkles, Leaf } from 'lucide-react'
+import type { Taxonomy } from '../../types/api'
 
 interface FormData {
   startDate: string
   endDate: string
   travelStyles: string[]
   pace: string
+  subCategories: Record<string, string[]>
+  dietary: string[]
 }
 
 interface StylePresetInfo {
@@ -40,6 +43,9 @@ interface Props {
   onStylePreset: (preset: string) => void
   selectedPreset?: string | null
   onHoverToggle?: () => void
+  taxonomy?: Taxonomy | null
+  onSubCategoryToggle: (categoryId: string, subId: string) => void
+  onDietaryToggle: (dietaryId: string) => void
 }
 
 const formatDateDisplay = (dateStr: string) => {
@@ -63,9 +69,15 @@ export default function TripDetailsForm({
   city, formData, travelStyles, paceOptions,
   onTravelStyleToggle, onPaceChange, onDateChange, onSubmit,
   tripDurationPresets, onTripDurationPreset, stylePresetsWithInfo, onStylePreset,
-  selectedPreset, onHoverToggle,
+  selectedPreset, onHoverToggle, taxonomy, onSubCategoryToggle, onDietaryToggle,
 }: Props) {
   const days = calculateDays(formData.startDate, formData.endDate)
+
+  // Only show sub-categories for styles the traveller actually picked, and only
+  // for styles that have any — otherwise the form balloons with irrelevant chips.
+  const refinable = (taxonomy?.categories ?? []).filter(
+    (c) => c.subCategories.length > 0 && formData.travelStyles.includes(c.label)
+  )
   return (
     <div className="glass-effect card-elevation rounded-lg p-5 sm:p-8 pt-10 sm:pt-12 pb-8 sm:pb-10 space-y-8 sm:space-y-10">
       <div className="text-center pb-6 border-b-2 border-taupe-200">
@@ -132,6 +144,80 @@ export default function TripDetailsForm({
           ))}
         </div>
       </div>
+
+      {/* Section: Optional sub-categories, per selected style */}
+      {refinable.length > 0 && (
+        <div className="space-y-5">
+          <div className="flex items-center gap-3 mb-1">
+            <Sparkles size={20} className="text-accent-sage" />
+            <span className="text-base font-semibold text-neutral-dark">Get more specific</span>
+            <span className="text-xs text-neutral-dark/50">optional</span>
+          </div>
+          {refinable.map((category) => (
+            <div key={category.id} className="space-y-2">
+              <label className="text-sm text-neutral-dark/60 font-medium">
+                {category.emoji} {category.label}
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {category.subCategories.map((sub) => {
+                  const active = (formData.subCategories[category.id] ?? []).includes(sub.id)
+                  return (
+                    <motion.button
+                      key={sub.id}
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => onSubCategoryToggle(category.id, sub.id)}
+                      aria-pressed={active}
+                      className={`px-3 py-2 rounded-full text-sm transition-all border ${
+                        active
+                          ? 'bg-accent-sage text-white border-accent-sage'
+                          : 'bg-cream-50 border-taupe-300 text-neutral-dark hover:border-accent-sage/50 hover:bg-cream-200'
+                      }`}
+                    >
+                      {sub.label}
+                    </motion.button>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Section: Dietary needs — constraints, not preferences */}
+      {taxonomy?.dietary?.length ? (
+        <div className="space-y-3">
+          <div className="flex items-center gap-3 mb-1">
+            <Leaf size={20} className="text-accent-sage" />
+            <span className="text-base font-semibold text-neutral-dark">Dietary needs</span>
+            <span className="text-xs text-neutral-dark/50">optional</span>
+          </div>
+          <p className="text-xs text-neutral-dark/60">
+            Applied to every food stop, whatever else you pick.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {taxonomy.dietary.map((option) => {
+              const active = formData.dietary.includes(option.id)
+              return (
+                <motion.button
+                  key={option.id}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  onClick={() => onDietaryToggle(option.id)}
+                  aria-pressed={active}
+                  className={`px-3 py-2 rounded-full text-sm transition-all border ${
+                    active
+                      ? 'bg-accent-terracotta text-white border-accent-terracotta'
+                      : 'bg-cream-50 border-taupe-300 text-neutral-dark hover:border-accent-terracotta/50 hover:bg-cream-200'
+                  }`}
+                >
+                  {option.label}
+                </motion.button>
+              )
+            })}
+          </div>
+        </div>
+      ) : null}
 
       {/* Section: Travel Dates */}
       <div className="space-y-4">

@@ -7,6 +7,22 @@ export interface ActivityBlock {
   duration_minutes: number
   notes: string
   budget_usd?: number
+
+  // Provenance — present only when the block was resolved against real place
+  // data. `source: 'generated'` means the server fell back to ungrounded
+  // generation, so these are absent and the coordinates are model-supplied.
+  place_id?: string
+  rating?: number
+  rating_count?: number
+  price_level?: number
+  address?: string
+  verified_at?: string
+  source?: 'grounded' | 'generated'
+  /**
+   * Present when the venue's dietary claim cannot be trusted for this specific
+   * location — an international chain whose menu varies by country.
+   */
+  dietary_caveat?: string
 }
 
 export interface ItineraryDay {
@@ -26,6 +42,13 @@ export interface ItineraryDay {
 export interface ItineraryResponse {
   success: boolean
   itinerary: ItineraryDay[]
+  /** False when no verified places were available and the model generated freely. */
+  grounded?: boolean
+  /**
+   * Things the traveller should know about how their itinerary was built —
+   * e.g. a dietary constraint that matched no venues, so no food was scheduled.
+   */
+  warnings?: string[]
 }
 
 export interface WeatherData {
@@ -45,6 +68,37 @@ export interface TripRequest {
   travelStyles: string[]
   pace: 'Relaxed' | 'Balanced' | 'Packed'
   weatherForecast?: WeatherData
+  preferences?: Preferences
+}
+
+/** Served by GET /api/taxonomy — the server owns this list. */
+export interface TaxonomySubCategory {
+  id: string
+  label: string
+}
+
+export interface TaxonomyCategory {
+  id: string
+  label: string
+  emoji: string
+  subCategories: TaxonomySubCategory[]
+}
+
+export interface TaxonomyDietaryOption {
+  id: string
+  label: string
+}
+
+export interface Taxonomy {
+  categories: TaxonomyCategory[]
+  dietary: TaxonomyDietaryOption[]
+}
+
+export interface Preferences {
+  /** Category id -> chosen sub-category ids. Soft preferences. */
+  subCategories?: Record<string, string[]>
+  /** Dietary constraint ids. Hard constraints. */
+  dietary?: string[]
 }
 
 export interface HomeBase {
